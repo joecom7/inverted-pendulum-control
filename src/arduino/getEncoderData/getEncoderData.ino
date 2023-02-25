@@ -1,8 +1,7 @@
-#define PPR 1000
+#define PPR 11500
 
 int encoderPin1 = 2;
 int encoderPin2 = 3;
-int ledPin1     = 5; // PWM
  
 volatile int lastEncoded = 0;
 volatile long encoderValue = 0;
@@ -11,17 +10,15 @@ long lastencoderValue = 0;
  
 int lastMSB = 0;
 int lastLSB = 0;
- 
+  
 void setup() {
   Serial.begin (9600);
  
   pinMode(encoderPin1, INPUT);
   pinMode(encoderPin2, INPUT);
-  pinMode(ledPin1, OUTPUT);
  
   digitalWrite(encoderPin1, HIGH); //turn pullup resistor on
   digitalWrite(encoderPin2, HIGH); //turn pullup resistor on
-  analogWrite (ledPin1,LOW);
  
   attachInterrupt(0, updateEncoder, CHANGE);
   attachInterrupt(1, updateEncoder, CHANGE);
