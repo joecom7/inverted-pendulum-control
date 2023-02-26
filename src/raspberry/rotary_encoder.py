@@ -15,8 +15,6 @@ class decoder:
 
       self.levA = 0
       self.levB = 0
-
-      self.lastGpio = None
       self.pos = 0
 
       self.pi.set_mode(gpioA, pigpio.INPUT)
@@ -56,9 +54,6 @@ class decoder:
          self.levA = level
       else:
          self.levB = level
-
-      if gpio != self.lastGpio: # debounce
-         self.lastGpio = gpio
 
          if   gpio == self.gpioA and level == 1:
             if self.levB == 1:
