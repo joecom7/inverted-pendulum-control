@@ -36,7 +36,7 @@ class decoder:
    def callback(self,way):
 
       self.pos += way
-      if self.pos > self.PPR/2:
+      if self.pos > self.PPR/2:  # Normalizziamo l'angolo fra -pi e pi
          self.pos -= self.PPR
       elif self.pos <= -self.PPR/2:
          self.pos += self.PPR
