@@ -63,30 +63,14 @@ class decoder:
          newLevB = level
          newLevA = self.oldLevA
       switchValue = int(newLevA)*8+int(newLevB)*4+int(self.oldLevA)*2+int(self.oldLevB)
-      if(switchValue==1):
+      if switchValue==1 or switchValue==7 or switchValue==8 or switchValue==14:
          self.callback(1)
-      elif(switchValue==2):
+      elif switchValue==2 or switchValue==4 or switchValue==11 or switchValue==13:
          self.callback(-1)
-      elif(switchValue==3):
+      elif switchValue==3 or switchValue==12:
          self.callback(2)
-      elif(switchValue==4):
-         self.callback(-1)
-      elif(switchValue==6):
+      elif switchValue==6 or switchValue==9:
          self.callback(-2)
-      elif(switchValue==7):
-         self.callback(1)
-      elif(switchValue==8):
-         self.callback(1)
-      elif(switchValue==9):
-         self.callback(-2)
-      elif(switchValue==11):
-         self.callback(-1)
-      elif(switchValue==12):
-         self.callback(2)
-      elif(switchValue==13):
-         self.callback(-1)
-      elif(switchValue==14):
-         self.callback(1)
       self.oldLevA = newLevA
       self.oldLevB = newLevB
 
