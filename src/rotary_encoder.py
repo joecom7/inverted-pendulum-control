@@ -14,11 +14,6 @@ class decoder:
       self.gpioA = gpioA
       self.gpioB = gpioB
 
-      self.levA = 0
-      self.levB = 0
-
-      self.lastGpio = None
-
       self.pi.set_mode(gpioA, pigpio.INPUT)
       self.pi.set_mode(gpioB, pigpio.INPUT)
 
@@ -28,7 +23,10 @@ class decoder:
       self.cbA = self.pi.callback(gpioA, pigpio.EITHER_EDGE, self._pulse)
       self.cbB = self.pi.callback(gpioB, pigpio.EITHER_EDGE, self._pulse)
 
-      self.PPR=3000
+      self.oldLevA = pi.read(gpioA)
+      self.oldLevB = pi.read(gpioB)
+
+      self.PPR=1024
       self.INITIAL_ANGLE = 0
       #self.INITIAL_ANGLE = math.pi
       self.pos = (self.INITIAL_ANGLE/(2*math.pi))*self.PPR
@@ -59,19 +57,40 @@ class decoder:
       """
 
       if gpio == self.gpioA:
-         self.levA = level
+         newLevA = level
+         newLevB = self.oldLevB
       else:
-         self.levB = level
-
-      if gpio != self.lastGpio: # debounce
-         self.lastGpio = gpio
-
-         if   gpio == self.gpioA and level == 1:
-            if self.levB == 1:
-               self.callback(1)
-         elif gpio == self.gpioB and level == 1:
-            if self.levA == 1:
-               self.callback(-1)
+         newLevB = level
+         newLevA = self.oldLevA
+      switchValue = int(newLevA)*8+int(newLevB)*4+int(self.oldLevA)*2+int(self.oldLevB)
+      if(switchValue==1):
+         self.callback(1)
+      elif(switchValue==2):
+         self.callback(-1)
+      elif(switchValue==3):
+         self.callback(2)
+      elif(switchValue==4):
+         self.callback(-1)
+      elif(switchValue==6):
+         self.callback(-2)
+      elif(switchValue==7):
+         self.callback(1)
+      elif(switchValue==8):
+         self.callback(1)
+      elif(switchValue==9):
+         self.callback(-2)
+      elif(switchValue==11):
+         self.callback(-1)
+      elif(switchValue==12):
+         self.callback(2)
+      elif(switchValue==13):
+         self.callback(-1)
+      elif(switchValue==14):
+         self.callback(1)
+      self.oldLevA = newLevA
+      self.oldLevB = newLevB
 
    def get_angle(self):
        return (self.pos*2*pi)/self.PPR
+   def get_angle_degrees(self):
+      return (self.pos*360)/self.PPR

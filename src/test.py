@@ -6,4 +6,4 @@ decoder = rotary_encoder.decoder(pi, 17, 18)
 
 while True:
     time.sleep(1)
-    print(decoder.get_angle())
+    print(decoder.get_angle_degrees())
