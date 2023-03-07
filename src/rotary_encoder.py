@@ -40,21 +40,30 @@ class decoder:
          self.pos += self.PPR
    def _pulse(self, gpio, level, tick):
 
-      """
-      Decode the rotary encoder pulse.
+#                           _______         _______       
+#               Pin1 ______|       |_______|       |______ Pin1
+# negative <---         _______         _______         __      --> positive
+#               Pin2 __|       |_______|       |_______|   Pin2
 
-                   +---------+         +---------+      0
-                   |         |         |         |
-         A         |         |         |         |
-                   |         |         |         |
-         +---------+         +---------+         +----- 1
-
-             +---------+         +---------+            0
-             |         |         |         |
-         B   |         |         |         |
-             |         |         |         |
-         ----+         +---------+         +---------+  1
-      """
+		#	new	new	old	old
+		#	pin2	pin1	pin2	pin1	Result
+		#	----	----	----	----	------
+		#	0	0	0	0	no movement
+		#	0	0	0	1	+1
+		#	0	0	1	0	-1
+		#	0	0	1	1	+2  (assume pin1 edges only)
+		#	0	1	0	0	-1
+		#	0	1	0	1	no movement
+		#	0	1	1	0	-2  (assume pin1 edges only)
+		#	0	1	1	1	+1
+		#	1	0	0	0	+1
+		#	1	0	0	1	-2  (assume pin1 edges only)
+		#	1	0	1	0	no movement
+		#	1	0	1	1	-1
+		#	1	1	0	0	+2  (assume pin1 edges only)
+		#	1	1	0	1	-1
+		#	1	1	1	0	+1
+		#	1	1	1	1	no movement
 
       if gpio == self.gpioA:
          newLevA = level
