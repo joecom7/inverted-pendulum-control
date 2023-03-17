@@ -1,2 +1,4 @@
 *.slxc
 */slprj/
+__pycache__
+*.pyc
