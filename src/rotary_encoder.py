@@ -3,6 +3,10 @@
 import pigpio
 from math import pi
 import math
+import os
+
+param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
+os.sched_setscheduler(0, os.SCHED_FIFO, param)
 
 class decoder:
 
