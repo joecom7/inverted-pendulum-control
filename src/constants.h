@@ -1,0 +1,6 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+#define TEMPO_CICLO_DESIDERATO_MICROSECONDI 5000
+
+#endif

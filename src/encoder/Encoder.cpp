@@ -1,5 +1,7 @@
 #include "Encoder.hpp"
 
+#include <math.h>
+
 int Encoder::PPR = 0;
 int Encoder::pos = 0;
 int Encoder::MAX_POS = 0;
@@ -23,6 +25,10 @@ void Encoder::callback(int way) {
     }
 }
 
-float Encoder::get_angle() {
-    return pos;
+double Encoder::get_angle() {
+    return (pos*2*M_PI)/Encoder::PPR;
+}
+
+double Encoder::get_angle_degrees() {
+    return (pos*360.0)/Encoder::PPR;;
 }
