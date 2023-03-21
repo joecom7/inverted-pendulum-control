@@ -10,9 +10,10 @@ os.sched_setscheduler(0, os.SCHED_FIFO, param)
 pi = pigpio.pi()
 decoder = rotary_encoder.decoder(pi, 17, 18)
 
-TEMPO_CICLO_DESIDERATO = 12e-3
+TEMPO_CICLO_DESIDERATO = 10e-3
 
 current_time = time.time()
+time.sleep(TEMPO_CICLO_DESIDERATO)
 last_delay = 0
 estimated_delay = 0
 coefficiente_stima_delay = 0.2
@@ -28,7 +29,7 @@ while True:
 
     # attività
     
-    print(f"{decoder.get_angle_degrees():10.3f},{(TEMPO_CICLO_DESIDERATO + last_delay)*1000:10.3f},{media_tempo_ciclo*1000:10.3f}")
+    print(f"{decoder.get_angle_degrees():10.3f},{(TEMPO_CICLO_DESIDERATO + last_delay)*1000:10.3f},{deviazione_standard_tempi_cicli*1000:10.3f},{media_tempo_ciclo*1000:10.3f}")
     for i in range(1000):
         pass
 
@@ -50,4 +51,4 @@ while True:
     estimated_delay = coefficiente_stima_delay * (media_tempo_ciclo - TEMPO_CICLO_DESIDERATO) + (1 - coefficiente_stima_delay) * last_delay
     #print(f"{estimated_delay}")
 
-    time.sleep(max(0,TEMPO_CICLO_DESIDERATO - (time.time() - start_time) - max(0,1.2*estimated_delay)))
+    time.sleep(max(0,TEMPO_CICLO_DESIDERATO - (time.time() - start_time) - max(0,0.3*estimated_delay)))

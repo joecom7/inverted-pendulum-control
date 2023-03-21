@@ -5,6 +5,7 @@ from math import pi
 import math
 import os
 from encoder_utils import get_callback
+from encoder_utils import get_new_position
 
 param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
 os.sched_setscheduler(0, os.SCHED_FIFO, param)
@@ -44,6 +45,7 @@ class decoder:
          self.pos -= self.PPR
       elif self.pos <= -self.PPR/2:
          self.pos += self.PPR
+      # self.pos = get_new_position(self.pos)
    def _pulse(self, gpio, level, tick):
 
 #                           _______         _______       
