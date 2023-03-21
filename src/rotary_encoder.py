@@ -4,6 +4,7 @@ import pigpio
 from math import pi
 import math
 import os
+from encoder_utils import get_callback
 
 param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
 os.sched_setscheduler(0, os.SCHED_FIFO, param)
@@ -33,7 +34,8 @@ class decoder:
       self.PPR=1024
       self.INITIAL_ANGLE = 0
       #self.INITIAL_ANGLE = math.pi
-      self.pos = (self.INITIAL_ANGLE/(2*math.pi))*self.PPR
+      #self.pos = (self.INITIAL_ANGLE/(2*math.pi))*self.PPR
+      self.pos = 0
 
    def callback(self,way):
 
@@ -75,15 +77,16 @@ class decoder:
       else:
          newLevB = level
          newLevA = self.oldLevA
-      switchValue = int(newLevA)*8+int(newLevB)*4+int(self.oldLevA)*2+int(self.oldLevB)
-      if switchValue==1 or switchValue==7 or switchValue==8 or switchValue==14:
-         self.callback(1)
-      elif switchValue==2 or switchValue==4 or switchValue==11 or switchValue==13:
-         self.callback(-1)
-      elif switchValue==3 or switchValue==12:
-         self.callback(2)
-      elif switchValue==6 or switchValue==9:
-         self.callback(-2)
+      #switchValue = int(newLevA)*8+int(newLevB)*4+int(self.oldLevA)*2+int(self.oldLevB)
+      #if switchValue==1 or switchValue==7 or switchValue==8 or switchValue==14:
+      #   self.callback(1)
+      #elif switchValue==2 or switchValue==4 or switchValue==11 or switchValue==13:
+      #   self.callback(-1)
+      #elif switchValue==3 or switchValue==12:
+      #   self.callback(2)
+      #elif switchValue==6 or switchValue==9:
+      #   self.callback(-2)
+      self.callback(get_callback(self.oldLevA,self.oldLevB,newLevA,newLevB))
       self.oldLevA = newLevA
       self.oldLevB = newLevB
 
