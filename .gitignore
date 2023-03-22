@@ -3,3 +3,7 @@
 __pycache__
 *.pyc
 main
+*.o
+*.so
+src/cythontest/cythontest.c
+src/cythontest/cythontest.h

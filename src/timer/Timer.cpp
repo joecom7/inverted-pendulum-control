@@ -24,7 +24,7 @@ void Timer::start_cycle() {
 }
 
 void Timer::end_cycle() {
-    usleep((TARGET_CYCLE_TIME_MICROSECONDS*2) - (Timer::microseconds()-current_cycle_start_microseconds) - time_stats.get_mean());
+    usleep(TARGET_CYCLE_TIME_MICROSECONDS - (Timer::microseconds()-current_cycle_start_microseconds) - 1.1*(time_stats.get_mean() - TARGET_CYCLE_TIME_MICROSECONDS));
 }
 
 float Timer::get_mean_cycle_time() {
