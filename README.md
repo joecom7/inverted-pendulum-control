@@ -2,27 +2,34 @@
 
 Progetto per la tesi di laurea di Giovanni Francesco Comune e Gianluca Pandolfi
 
-## Requisiti
+## Requirements
 
-Il codice python per il Raspberry Pi necessita di pigpio. Installarlo con:
+Per compilare il progetto è necessario pigpio. Installarlo con:
 ```
-sudo apt-get install pigpio python-pigpio python3-pigpio
+wget https://github.com/joan2937/pigpio/archive/master.zip
+unzip master.zip
+cd pigpio-master
+make
+sudo make install
 ```
-Avviare il demone di pigpio:
+
+Sono inoltre necessari python3 e la libreria cython. Installarla con:
+
 ```
-sudo systemctl enable pigpiod
-sudo systemctl start pigpiod
+pip3 install Cython
 ```
-## Schematica circuitale
 
-![Schematica circuitale](./documentazione/circuito/circuito.svg)
+## Compilazione
 
-## Misura angolare
+Compilare con:
 
-L'encoder, quando ruota, trasmette delle onde quadre sui pin A e B. Analizzando i due segnali e il numero di fronti si può stabilire in che direzione sta ruotando.
+```
+make
+```
 
-![Funzionamento encoder](./documentazione/encoder/encoder.svg)
+## Esecuzione
+Eseguire con:
 
-Le onde quadre saranno sfasate. Nell'esempio, se l'onda quadra relativa al pin A è in anticipo allora l'encoder sta ruotando in senso antiorario, altrimenti in senso orario. Inoltre contando il numero di fronti di salita e discesa di entrambe le onde (le pulse) e conoscendo il numero di PPR (Pulse Per Revolution) si può calcolare la variazione angolare.
-
-![Funzionamento encoder](./documentazione/encoder/encoder_signal.svg)
+```
+sudo ./stabilizer
+```
