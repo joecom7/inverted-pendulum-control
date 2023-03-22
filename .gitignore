@@ -8,3 +8,4 @@ main
 src/cythontest/cythontest.c
 src/cythontest/cythontest.h
 stabilizer
+src/cythontest/setup.py
