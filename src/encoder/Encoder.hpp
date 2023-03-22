@@ -2,6 +2,7 @@
 #define ENCODER_H
 
 #include "rotary_encoder/rotary_encoder.hpp"
+#include <math.h>
 
 class Encoder {
     private:
@@ -15,8 +16,8 @@ class Encoder {
         static void callback(int way);
     public:
         Encoder(int clk_gpio, int dt_gpio, int ppr, int start_angle_degrees);
-        double get_angle();
-        double get_angle_degrees();
+        float get_angle();
+        float get_angle_degrees();
 };
 
 #endif

@@ -2,6 +2,7 @@
 #define ROTARY_ENCODER_HPP
 
 #include <stdint.h>
+#include <pigpio.h>
 
 typedef void (*re_decoderCB_t)(int);
 
