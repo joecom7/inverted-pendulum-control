@@ -5,15 +5,15 @@
 #include <inttypes.h>
 #include "src/cythontest/cythontest.h"
 
+void py_init() {
+    PyImport_AppendInittab("cythontest", PyInit_cythontest);
+    Py_Initialize();
+    PyImport_ImportModule("cythontest");
+}
+
 
 int main() {
-    auto err = PyImport_AppendInittab("cythontest", PyInit_cythontest);
-    if (err) {
-        std::cout << "ERROR!\n";
-        return 1;
-
-    }
-    Py_Initialize();
+    py_init();
     PyImport_ImportModule("cythontest");
     Timer timer(TARGET_CYCLE_TIME_MICROSECONDS , DELAY_FEEDBACK_GAIN);
     Encoder encoder(ENCODER_CLK_PIN, ENCODER_DT_PIN, ENCODER_PPR,ENCODER_START_ANGLE_DEGREES);
