@@ -1,5 +1,5 @@
-OBJS	= src/encoder/rotary_encoder/rotary_encoder.o src/encoder/Encoder.o src/timer/timerStats/TimerStats.o src/timer/Timer.o stabilizer.o src/robot/mecawrapper/mecawrapper.o
-SOURCE	= src/encoder/rotary_encoder/rotary_encoder.cpp src/encoder/Encoder.cpp src/timer/timerStats/TimerStats.cpp src/timer/Timer.cpp stabilizer.cpp src/robot/mecawrapper/mecawrapper.c
+OBJS	= src/encoder/rotary_encoder/rotary_encoder.o src/encoder/Encoder.o src/timer/timerStats/TimerStats.o src/timer/Timer.o stabilizer.o src/robot/mecawrapper/mecawrapper.o src/robot/Robot.o
+SOURCE	= src/encoder/rotary_encoder/rotary_encoder.cpp src/encoder/Encoder.cpp src/timer/timerStats/TimerStats.cpp src/timer/Timer.cpp stabilizer.cpp src/robot/mecawrapper/mecawrapper.c src/robot/Robot.cpp
 
 OUT	= stabilizer
 CC	 = g++
@@ -23,6 +23,9 @@ src/timer/timerStats/TimerStats.o: src/timer/timerStats/TimerStats.cpp
 
 src/timer/Timer.o: src/timer/Timer.cpp
 	$(CC) -o src/timer/Timer.o $(FLAGS) src/timer/Timer.cpp
+
+src/robot/Robot.o: src/robot/Robot.cpp src/robot/mecawrapper/mecawrapper.c
+	$(CC) -o src/robot/Robot.o $(FLAGS) src/robot/Robot.cpp $(LFLAGS)
 
 stabilizer.o: stabilizer.cpp src/robot/mecawrapper/mecawrapper.c constants.hpp
 	$(CC) -o stabilizer.o $(FLAGS) stabilizer.cpp $(LFLAGS)
