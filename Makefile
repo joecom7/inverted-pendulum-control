@@ -9,7 +9,7 @@ LFLAGS	 = -lpigpio -lrt `python3-config --cflags --ldflags --embed`
 all: $(OBJS)
 	$(CC) -g $(OBJS) -o $(OUT) $(LFLAGS)
 
-src/robot/mecawrapper/mecawrapper.c src/robot/mecawrapper/mecawrapper.h: src/robot/mecawrapper/mecawrapper.pyx
+src/robot/mecawrapper/mecawrapper.c : src/robot/mecawrapper/mecawrapper.pyx
 	cythonize -3 src/robot/mecawrapper/mecawrapper.pyx
 
 src/encoder/rotary_encoder/rotary_encoder.o: src/encoder/rotary_encoder/rotary_encoder.cpp
@@ -24,10 +24,10 @@ src/timer/timerStats/TimerStats.o: src/timer/timerStats/TimerStats.cpp
 src/timer/Timer.o: src/timer/Timer.cpp
 	$(CC) -o src/timer/Timer.o $(FLAGS) src/timer/Timer.cpp
 
-src/robot/Robot.o: src/robot/Robot.cpp src/robot/mecawrapper/mecawrapper.h
+src/robot/Robot.o: src/robot/Robot.cpp src/robot/mecawrapper/mecawrapper.c
 	$(CC) -o src/robot/Robot.o $(FLAGS) src/robot/Robot.cpp $(LFLAGS)
 
-stabilizer.o: stabilizer.cpp src/robot/mecawrapper/mecawrapper.h constants.hpp
+stabilizer.o: stabilizer.cpp src/robot/mecawrapper/mecawrapper.c constants.hpp
 	$(CC) -o stabilizer.o $(FLAGS) stabilizer.cpp $(LFLAGS)
 
 src/robot/mecawrapper/mecawrapper.o: src/robot/mecawrapper/mecawrapper.c
