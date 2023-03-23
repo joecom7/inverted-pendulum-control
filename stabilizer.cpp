@@ -1,7 +1,7 @@
 #include <iostream>
 #include "src/encoder/Encoder.hpp"
 #include "src/timer/Timer.hpp"
-#include "constants.h"
+#include "constants.hpp"
 #include <inttypes.h>
 #include "src/cythontest/cythontest.h"
 

@@ -24,7 +24,7 @@ src/timer/timerStats/TimerStats.o: src/timer/timerStats/TimerStats.cpp
 src/timer/Timer.o: src/timer/Timer.cpp
 	$(CC) -o src/timer/Timer.o $(FLAGS) src/timer/Timer.cpp
 
-stabilizer.o: stabilizer.cpp src/cythontest/cythontest.c constants.h
+stabilizer.o: stabilizer.cpp src/cythontest/cythontest.c constants.hpp
 	$(CC) -o stabilizer.o $(FLAGS) stabilizer.cpp $(LFLAGS)
 
 src/cythontest/cythontest.o: src/cythontest/cythontest.c
