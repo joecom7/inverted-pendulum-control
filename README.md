@@ -2,7 +2,7 @@
 
 Progetto per la tesi di laurea di Giovanni Francesco Comune e Gianluca Pandolfi
 
-## Requirements
+## Requisiti
 
 Per compilare il progetto è necessario pigpio. Installarlo con:
 ```
