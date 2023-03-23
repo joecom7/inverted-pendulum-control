@@ -3,7 +3,7 @@
 #include "src/timer/Timer.hpp"
 #include "constants.hpp"
 #include <inttypes.h>
-#include "src/mecawrapper/mecawrapper.h"
+#include "src/robot/mecawrapper/mecawrapper.h"
 
 void py_init() {
     PyImport_AppendInittab("mecawrapper", PyInit_mecawrapper);
