@@ -10,8 +10,11 @@ int main() {
     Robot robot;
     Timer timer(TARGET_CYCLE_TIME_MICROSECONDS , DELAY_FEEDBACK_GAIN);
     Encoder encoder(ENCODER_CLK_PIN, ENCODER_DT_PIN, ENCODER_PPR,ENCODER_START_ANGLE_DEGREES);
-    robot.print_number(36e+4);
-    robot.print_number(2);
+    if(!BYPASS_ROBOT) {
+        robot.connect();
+        robot.activate();
+        robot.home();
+    }
     while(true) {
         timer.start_cycle();
         printf("enc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10u min_time=%-10u\n" , 

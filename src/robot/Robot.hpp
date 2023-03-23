@@ -8,6 +8,12 @@ class Robot {
         static void py_init();
     public:
         Robot();
+        void connect();
+        void activate();
+        void home();
+        void deactivate();
+        void disconnect();
+        void reset_error();
         void print_number(float number);
 };
 

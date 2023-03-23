@@ -20,7 +20,7 @@
 
 */
 
-void re_decoder::_pulse(int gpio, int level, uint32_t tick)
+void re_decoder::_pulse(int gpio, int level, uint32_t tick __attribute__((unused)))
 {
    int old_levA, old_levB ,switch_value;
    if (gpio == mygpioA) 

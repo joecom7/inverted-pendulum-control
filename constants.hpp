@@ -7,5 +7,6 @@
 #define ENCODER_PPR 1024
 #define ENCODER_START_ANGLE_DEGREES 0
 #define DELAY_FEEDBACK_GAIN 1.2
+#define BYPASS_ROBOT 1
 
 #endif

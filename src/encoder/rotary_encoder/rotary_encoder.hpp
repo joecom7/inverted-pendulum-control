@@ -12,7 +12,7 @@ class re_decoder
 
    re_decoderCB_t mycallback;
 
-   void _pulse(int gpio, int level, uint32_t tick);
+   void _pulse(int gpio, int level, uint32_t tick __attribute__((unused)));
 
    /* Need a static callback to link with C. */
    static void _pulseEx(int gpio, int level, uint32_t tick, void *user);
