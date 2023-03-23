@@ -3,6 +3,12 @@
 
 #include "mecawrapper/mecawrapper.h"
 
-void py_init();
+class Robot {
+    private:
+        static void py_init();
+    public:
+        Robot();
+        void print_number(float number);
+};
 
 #endif
