@@ -3,18 +3,18 @@
 #include "src/timer/Timer.hpp"
 #include "constants.hpp"
 #include <inttypes.h>
-#include "src/cythontest/cythontest.h"
+#include "src/mecawrapper/mecawrapper.h"
 
 void py_init() {
-    PyImport_AppendInittab("cythontest", PyInit_cythontest);
+    PyImport_AppendInittab("mecawrapper", PyInit_mecawrapper);
     Py_Initialize();
-    PyImport_ImportModule("cythontest");
+    PyImport_ImportModule("mecawrapper");
 }
 
 
 int main() {
     py_init();
-    PyImport_ImportModule("cythontest");
+    PyImport_ImportModule("mecawrapper");
     Timer timer(TARGET_CYCLE_TIME_MICROSECONDS , DELAY_FEEDBACK_GAIN);
     Encoder encoder(ENCODER_CLK_PIN, ENCODER_DT_PIN, ENCODER_PPR,ENCODER_START_ANGLE_DEGREES);
     print_velocity(36e+4);

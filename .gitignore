@@ -9,3 +9,5 @@ src/cythontest/cythontest.c
 src/cythontest/cythontest.h
 stabilizer
 src/cythontest/setup.py
+src/mecawrapper/mecawrapper.c
+src/mecawrapper/mecawrapper.h
