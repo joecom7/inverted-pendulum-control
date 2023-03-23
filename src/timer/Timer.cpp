@@ -1,7 +1,9 @@
 #include "Timer.hpp"
 
-Timer::Timer(unsigned int target_cycle_time_microseconds) : 
-    TARGET_CYCLE_TIME_MICROSECONDS(target_cycle_time_microseconds) , time_stats(target_cycle_time_microseconds){
+Timer::Timer(unsigned int target_cycle_time_microseconds, float delay_feedback_gain) : 
+    TARGET_CYCLE_TIME_MICROSECONDS(target_cycle_time_microseconds) ,
+    DELAY_FEEDBACK_GAIN(delay_feedback_gain) ,
+    time_stats(target_cycle_time_microseconds) {
         struct sched_param sp;
         memset( &sp, 0, sizeof(sp) );
         sp.sched_priority = 99;
@@ -24,7 +26,7 @@ void Timer::start_cycle() {
 }
 
 void Timer::end_cycle() {
-    usleep(TARGET_CYCLE_TIME_MICROSECONDS - (Timer::microseconds()-current_cycle_start_microseconds) - 1.1*(time_stats.get_mean() - TARGET_CYCLE_TIME_MICROSECONDS));
+    usleep(TARGET_CYCLE_TIME_MICROSECONDS - (Timer::microseconds()-current_cycle_start_microseconds) - DELAY_FEEDBACK_GAIN*(time_stats.get_mean() - TARGET_CYCLE_TIME_MICROSECONDS));
 }
 
 float Timer::get_mean_cycle_time() {

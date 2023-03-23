@@ -15,7 +15,7 @@ int main() {
     }
     Py_Initialize();
     PyImport_ImportModule("cythontest");
-    Timer timer(TARGET_CYCLE_TIME_MICROSECONDS);
+    Timer timer(TARGET_CYCLE_TIME_MICROSECONDS , DELAY_FEEDBACK_GAIN);
     Encoder encoder(ENCODER_CLK_PIN, ENCODER_DT_PIN, ENCODER_PPR,ENCODER_START_ANGLE_DEGREES);
     print_velocity(36e+4);
     print_velocity(2);

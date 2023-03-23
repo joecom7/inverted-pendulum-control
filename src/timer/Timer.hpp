@@ -14,12 +14,13 @@
  */
 class Timer {
     private:
-        static uint64_t microseconds();
         const unsigned int TARGET_CYCLE_TIME_MICROSECONDS;
+        const float DELAY_FEEDBACK_GAIN;
         uint64_t current_cycle_start_microseconds;
         TimerStats time_stats;
+        static uint64_t microseconds();
     public:
-        Timer(unsigned int target_cycle_time_microseconds);
+        Timer(unsigned int target_cycle_time_microseconds , float delay_feedback_gain);
         void start_cycle();
         void end_cycle();
         float get_mean_cycle_time();
