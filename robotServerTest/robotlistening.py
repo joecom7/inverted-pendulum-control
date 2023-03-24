@@ -48,7 +48,12 @@ def handleClearMotion(conn): # [2044][The motion was cleared.]
     responseCode = str("[2044]")
     responseMessage = str("[The motion was cleared.]\0")
     conn.sendall(encode_ascii((responseCode + responseMessage)))
- 
+
+def handleResetError(conn):
+    responseCode = str("[2006]") # [2006][There was no error to reset.]
+    responseMessage = str("[There was no error to reset.]\0")
+    conn.sendall(encode_ascii((responseCode + responseMessage)))
+
  
  
  
@@ -66,6 +71,9 @@ def handleData(data, conn):
     elif data == "ClearMotion\0":
         handleClearMotion(conn)
         print("ClearMotion handled\n")
+    elif data == "ResetError\0":
+        handleResetError(conn)
+        print("ResetError handled\n")
     else: 
         return
  
