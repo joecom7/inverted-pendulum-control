@@ -7,8 +7,8 @@
 class TimerStats {
     private:
         const uint32_t BASE_CYCLE_TIME;
-        float sum_cycle_times;
-        float quadratic_sum_cycle_times;
+        double sum_cycle_times;
+        double quadratic_sum_cycle_times;
         uint32_t max_cycle_time;
         uint32_t min_cycle_time;
         int cycles;

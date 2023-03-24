@@ -9,7 +9,7 @@ TimerStats::TimerStats(uint32_t base_cycle_time) : BASE_CYCLE_TIME(base_cycle_ti
 }
 
 void TimerStats::set_last_cycle_time(uint32_t last_cycle_time_microseconds) {
-    sum_cycle_times += last_cycle_time_microseconds;
+    sum_cycle_times += (float)last_cycle_time_microseconds;
     quadratic_sum_cycle_times += pow((float)last_cycle_time_microseconds,2);
     if(last_cycle_time_microseconds > max_cycle_time)
         max_cycle_time = last_cycle_time_microseconds;

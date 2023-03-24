@@ -21,7 +21,7 @@ src/encoder/Encoder.o: src/encoder/Encoder.cpp
 Constants.o: Constants.cpp
 	$(CC) -o Constants.o $(FLAGS) Constants.cpp
 
-src/timer/timerStats/TimerStats.o: src/timer/timerStats/TimerStats.cpp
+src/timer/timerStats/TimerStats.o: src/timer/timerStats/TimerStats.cpp src/timer/timerStats/TimerStats.hpp
 	$(CC) -o src/timer/timerStats/TimerStats.o $(FLAGS) src/timer/timerStats/TimerStats.cpp
 
 src/timer/Timer.o: src/timer/Timer.cpp

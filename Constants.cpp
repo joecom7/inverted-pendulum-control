@@ -8,4 +8,4 @@ const uint8_t Constants::ENCODER_START_ANGLE_DEGREES = 0;
 const float Constants::DELAY_FEEDBACK_GAIN =1.2;
 const float Constants::AGGRESSIVE_DELAY_FEEDBACK_GAIN =40;
 const bool Constants::BYPASS_ROBOT = true;
-const bool Constants::TIMER_AGGRESSIVE_MODE = true;
+const bool Constants::TIMER_AGGRESSIVE_MODE = false;
