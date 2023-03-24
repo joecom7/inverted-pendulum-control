@@ -76,6 +76,7 @@ def handleData(data, conn):
         print("ResetError handled\n")
     elif (data.find("MoveLin") != -1) and (data.find('\0') != -1):
         print("MoveLin executed\n")
+        conn.sendall(encode_ascii(("Motion received")))
     else: 
         return
  
@@ -103,3 +104,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             if len(data) != 0:
                 print(data)
                 handleData(data, conn)
+                lastMessage = time.time()
