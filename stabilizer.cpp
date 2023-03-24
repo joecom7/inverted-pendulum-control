@@ -17,7 +17,15 @@ void cleanup(int signum) {
 
 
 int main() {
-    Timer timer(Constants::TARGET_CYCLE_TIME_MICROSECONDS , Constants::DELAY_FEEDBACK_GAIN);
+    float delay_feedback_gain;
+    if(Constants::TIMER_AGGRESSIVE_MODE) {
+        delay_feedback_gain = Constants::AGGRESSIVE_DELAY_FEEDBACK_GAIN;
+    }
+    else {
+        delay_feedback_gain = Constants::DELAY_FEEDBACK_GAIN;
+    }
+    Timer timer(Constants::TARGET_CYCLE_TIME_MICROSECONDS , delay_feedback_gain,
+        Constants::TIMER_AGGRESSIVE_MODE);
     Encoder encoder(Constants::ENCODER_CLK_PIN, 
         Constants::ENCODER_DT_PIN, Constants::ENCODER_PPR,
         Constants::ENCODER_START_ANGLE_DEGREES);

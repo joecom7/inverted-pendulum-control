@@ -10,7 +10,9 @@ namespace Constants {
     extern const uint16_t ENCODER_PPR;
     extern const uint8_t ENCODER_START_ANGLE_DEGREES;
     extern const float DELAY_FEEDBACK_GAIN;
+    extern const float AGGRESSIVE_DELAY_FEEDBACK_GAIN;
     extern const bool BYPASS_ROBOT;
+    extern const bool TIMER_AGGRESSIVE_MODE;
 }
 
 #endif

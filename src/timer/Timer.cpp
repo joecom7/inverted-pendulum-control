@@ -1,8 +1,9 @@
 #include "Timer.hpp"
 
-Timer::Timer(unsigned int target_cycle_time_microseconds, float delay_feedback_gain) : 
+Timer::Timer(unsigned int target_cycle_time_microseconds, float delay_feedback_gain, bool aggressive_mode) : 
     TARGET_CYCLE_TIME_MICROSECONDS(target_cycle_time_microseconds) ,
     DELAY_FEEDBACK_GAIN(delay_feedback_gain) ,
+    AGGRESSIVE_MODE(aggressive_mode) ,
     time_stats(target_cycle_time_microseconds) {
         struct sched_param sp;
         memset( &sp, 0, sizeof(sp) );
@@ -25,11 +26,13 @@ void Timer::start_cycle() {
     Queste linee di codice riducono ulteriormente la variazione standard e avvicinano
     ancora di più la media al valore desiderato, al costo di diversi
     cicli di clock sprecati
-
-    while(current_cycle_start_microseconds - last_cycle_start_microseconds <= TARGET_CYCLE_TIME_MICROSECONDS) {
-        current_cycle_start_microseconds = Timer::microseconds();
-    }
     */
+    if(AGGRESSIVE_MODE) {
+        while(current_cycle_start_microseconds - last_cycle_start_microseconds <= TARGET_CYCLE_TIME_MICROSECONDS) {
+            current_cycle_start_microseconds = Timer::microseconds();
+        }
+    }
+    
     if(last_cycle_start_microseconds != 0)
         time_stats.set_last_cycle_time(current_cycle_start_microseconds - last_cycle_start_microseconds);
 }

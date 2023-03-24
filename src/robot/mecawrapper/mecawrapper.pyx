@@ -1,7 +1,7 @@
 import cython
 from libcpp cimport bool
 
-robot_ip = '192.168.0.100'
+robot_ip = 'localhost'
 
 cdef public void meca_init(bool bypass_robot):
     global robot
