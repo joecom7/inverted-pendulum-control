@@ -5,9 +5,10 @@
 
 class Robot {
     private:
-        static void py_init();
+        static void py_init(bool bypass_robot);
+        const bool BYPASS_ROBOT;
     public:
-        Robot();
+        Robot(bool bypass_robot);
         void connect();
         void activate();
         void home();

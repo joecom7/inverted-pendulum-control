@@ -19,10 +19,19 @@ uint64_t Timer::microseconds() {
 }
 
 void Timer::start_cycle() {
-    uint64_t last_cycle_time_microseconds = current_cycle_start_microseconds;
+    uint64_t last_cycle_start_microseconds = current_cycle_start_microseconds;
     current_cycle_start_microseconds = Timer::microseconds();
-    if(last_cycle_time_microseconds != 0)
-        time_stats.set_last_cycle_time(current_cycle_start_microseconds - last_cycle_time_microseconds);
+    /*
+    Queste linee di codice riducono ulteriormente la variazione standard e avvicinano
+    ancora di più la media al valore desiderato, al costo di diversi
+    cicli di clock sprecati
+
+    while(current_cycle_start_microseconds - last_cycle_start_microseconds <= TARGET_CYCLE_TIME_MICROSECONDS) {
+        current_cycle_start_microseconds = Timer::microseconds();
+    }
+    */
+    if(last_cycle_start_microseconds != 0)
+        time_stats.set_last_cycle_time(current_cycle_start_microseconds - last_cycle_start_microseconds);
 }
 
 void Timer::end_cycle() {

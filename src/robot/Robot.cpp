@@ -1,14 +1,14 @@
 #include "Robot.hpp"
 
-void Robot::py_init() {
+void Robot::py_init(bool bypass_robot) {
     PyImport_AppendInittab("mecawrapper", PyInit_mecawrapper);
     Py_Initialize();
     PyImport_ImportModule("mecawrapper");
-    meca_init();
+    meca_init(bypass_robot);
 }
 
-Robot::Robot() {
-    py_init();
+Robot::Robot(bool bypass_robot) : BYPASS_ROBOT(bypass_robot){
+    py_init(bypass_robot);
 }
 
 void Robot::connect() {
