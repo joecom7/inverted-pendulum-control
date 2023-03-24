@@ -74,6 +74,8 @@ def handleData(data, conn):
     elif data == "ResetError\0":
         handleResetError(conn)
         print("ResetError handled\n")
+    elif (data.find("MoveLin") != -1) and (data.find('\0') != -1):
+        print("MoveLin executed\n")
     else: 
         return
  
