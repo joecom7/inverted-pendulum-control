@@ -1,44 +1,50 @@
 import cython
 from libcpp cimport bool
 
-robot_ip = 'localhost'
-
-cdef public void meca_init(bool bypass_robot):
+cdef public void meca_init(bool bypass_robot, const char* robot_ip):
     global robot
+    robot_ip_str = robot_ip.decode()
     if not bypass_robot:
-        print(f"python : creo un oggetto robot con ip {robot_ip}")
+        print(f"python : importo il modulo MecademicRobot")
         import MecademicRobot
-        robot = MecademicRobot.RobotController(robot_ip)
+        print(f"python : creo un oggetto robot con ip {robot_ip_str}")
+        robot = MecademicRobot.RobotController(robot_ip_str)
 
 cdef public void meca_connect():
     global robot
-    print("python : provo a connnettermi al robot")
+    print("python : mi connetto al robot")
     connection_successful = robot.connect()
     if not connection_successful:
         print("python : la connessione al robot non è andata a buon fine")
+    else:
+        print("python : la connessione al robot è andata a buon fine")
 
 cdef public void meca_activate():
     global robot
-    print("python : provo ad attivare il robot")
-    robot.ActivateRobot()
+    print("python : attivo il robot")
+    response = robot.ActivateRobot()
+    print(f"robot : {response}")
 
 cdef public void meca_home():
     global robot
-    robot.home()
+    response = robot.home()
+    print(f"robot : {response}")
 
 cdef public void meca_deactivate():
     global robot
-    print("python : provo a disattivare il robot")
-    robot.DeactivateRobot()
+    print("python : disattivo il robot")
+    response = robot.DeactivateRobot()
+    print(f"robot : {response}")
 
 cdef public void meca_disconnect():
     global robot
-    print("python : provo a disconnettermi dal robot")
+    print("python : mi disconnetto dal robot")
     robot.disconnect()
 
 cdef public void meca_reset_error():
     global robot
-    robot.ResetError()
+    response = robot.ResetError()
+    print(f"robot : {response}")
 
 cdef public void print_velocity(float f):
     print(f"Sono Python! Ho ricevuto il numero {f}")

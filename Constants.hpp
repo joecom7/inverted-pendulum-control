@@ -13,6 +13,7 @@ namespace Constants {
     extern const float AGGRESSIVE_DELAY_FEEDBACK_GAIN;
     extern const bool BYPASS_ROBOT;
     extern const bool TIMER_AGGRESSIVE_MODE;
+    extern const char* ROBOT_IP;
 }
 
 #endif

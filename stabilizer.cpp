@@ -6,12 +6,12 @@
 #include "src/robot/Robot.hpp"
 #include "signal.h"
 
-Robot robot(Constants::BYPASS_ROBOT);
+Robot robot(Constants::ROBOT_IP , Constants::BYPASS_ROBOT);
 
 void cleanup(int signum) {
     robot.deactivate();
     robot.disconnect();
-    printf("ho ricevuto il segnale %d. chiudo...\n" , signum);
+    printf("ho ricevuto il segnale %d. termino...\n" , signum);
     exit(0);
 }
 
@@ -39,7 +39,7 @@ int main() {
             encoder.get_angle_degrees() , timer.get_mean_cycle_time(),
             timer.get_standard_deviation_cycle_time() , timer.get_max_cycle_time(),
             timer.get_min_cycle_time());
-        robot.print_number(timer.get_mean_cycle_time());
+        robot.print_number(encoder.get_angle_degrees());
         timer.end_cycle();
     }
 }
