@@ -20,7 +20,7 @@ void TimerStats::set_last_cycle_time(uint32_t last_cycle_time_microseconds) {
 
 double TimerStats::get_mean() {
     if(cycles == 0)
-        return BASE_CYCLE_TIME*7/4;
+        return BASE_CYCLE_TIME*7.0/4.0;
     return sum_cycle_times / cycles;
 }
 
