@@ -35,11 +35,28 @@ int main() {
     robot.home();
     while(true) {
         timer.start_cycle();
-        printf("enc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10u min_time=%-10u\n" , 
+        /*
+            Qui andranno le operazioni da eseguire in ciclo
+        */
+
+        /*
+            Operazioni inutilmente complesse per testare come si comporta l'algoritmo
+        */
+        double a = 1.7;
+        for(int i=0;i<10;i++) {
+            a = sqrt(pow(cos(encoder.get_angle_degrees()),a)) + 1.7 + sin(sqrt(a/3.6));
+        }
+        /*
+            Fine operazioni inutilmente complesse
+        */
+        printf("enc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10u min_time=%-10u ignore=%-10.3f\n" , 
             encoder.get_angle_degrees() , timer.get_mean_cycle_time(),
             timer.get_standard_deviation_cycle_time() , timer.get_max_cycle_time(),
-            timer.get_min_cycle_time());
+            timer.get_min_cycle_time() , a);
         robot.print_number(encoder.get_angle_degrees());
+        /*
+            Fine operazioni
+        */
         timer.end_cycle();
     }
 }

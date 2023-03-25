@@ -31,6 +31,6 @@ void Robot::reset_error() {
     meca_reset_error();
 }
 
-void Robot::print_number(float number) {
+void Robot::print_number(double number) {
     print_velocity(number);
 }

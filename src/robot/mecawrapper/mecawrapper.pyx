@@ -46,5 +46,5 @@ cdef public void meca_reset_error():
     response = robot.ResetError()
     print(f"robot : {response}")
 
-cdef public void print_velocity(float f):
-    print(f"Sono Python! Ho ricevuto il numero {f}")
+cdef public void print_velocity(double n):
+    print(f"Sono Python! Ho ricevuto il numero {n}")

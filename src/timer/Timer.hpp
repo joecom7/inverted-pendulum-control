@@ -24,8 +24,8 @@ class Timer {
         Timer(unsigned int target_cycle_time_microseconds , float delay_feedback_gain, bool aggressive_mode);
         void start_cycle();
         void end_cycle();
-        float get_mean_cycle_time();
-        float get_standard_deviation_cycle_time();
+        double get_mean_cycle_time();
+        double get_standard_deviation_cycle_time();
         uint32_t get_max_cycle_time();
         uint32_t get_min_cycle_time();
 };

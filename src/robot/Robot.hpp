@@ -15,7 +15,7 @@ class Robot {
         void deactivate();
         void disconnect();
         void reset_error();
-        void print_number(float number);
+        void print_number(double number);
 };
 
 #endif

@@ -18,13 +18,13 @@ void TimerStats::set_last_cycle_time(uint32_t last_cycle_time_microseconds) {
     cycles++;
 }
 
-float TimerStats::get_mean() {
+double TimerStats::get_mean() {
     if(cycles == 0)
-        return BASE_CYCLE_TIME;
+        return BASE_CYCLE_TIME*7/4;
     return sum_cycle_times / cycles;
 }
 
-float TimerStats::get_standard_deviation() {
+double TimerStats::get_standard_deviation() {
     if(cycles == 0)
         return 0;
     return sqrt(quadratic_sum_cycle_times/cycles - pow(get_mean(),2));

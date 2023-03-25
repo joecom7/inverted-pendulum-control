@@ -41,11 +41,11 @@ void Timer::end_cycle() {
     usleep(TARGET_CYCLE_TIME_MICROSECONDS - (Timer::microseconds()-current_cycle_start_microseconds) - DELAY_FEEDBACK_GAIN*(time_stats.get_mean() - TARGET_CYCLE_TIME_MICROSECONDS));
 }
 
-float Timer::get_mean_cycle_time() {
+double Timer::get_mean_cycle_time() {
     return time_stats.get_mean();
 }
         
-float Timer::get_standard_deviation_cycle_time() {
+double Timer::get_standard_deviation_cycle_time() {
     return time_stats.get_standard_deviation();
 }
 

@@ -15,8 +15,8 @@ class TimerStats {
     public:
         TimerStats(uint32_t base_cycle_time);
         void set_last_cycle_time(uint32_t last_cycle_time_microseconds);
-        float get_mean();
-        float get_standard_deviation();
+        double get_mean();
+        double get_standard_deviation();
         uint32_t get_max();
         uint32_t get_min();
 };

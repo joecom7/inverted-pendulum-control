@@ -18,7 +18,7 @@ src/encoder/rotary_encoder/rotary_encoder.o: src/encoder/rotary_encoder/rotary_e
 src/encoder/Encoder.o: src/encoder/Encoder.cpp
 	$(CC) -o src/encoder/Encoder.o $(FLAGS) src/encoder/Encoder.cpp
 
-Constants.o: Constants.cpp
+Constants.o: Constants.cpp Constants.hpp
 	$(CC) -o Constants.o $(FLAGS) Constants.cpp
 
 src/timer/timerStats/TimerStats.o: src/timer/timerStats/TimerStats.cpp src/timer/timerStats/TimerStats.hpp
