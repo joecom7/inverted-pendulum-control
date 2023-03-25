@@ -25,6 +25,7 @@ void Robot::deactivate() {
 
 void Robot::disconnect() {
     meca_disconnect();
+    Py_Finalize();
 }
 
 void Robot::reset_error() {

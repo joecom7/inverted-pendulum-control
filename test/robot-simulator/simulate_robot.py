@@ -1,5 +1,6 @@
 import socket
 import time
+import os
  
 def encode_ascii(str):
     return bytes(str,'ascii') + b'\x00'
@@ -82,11 +83,18 @@ def handleData(data, conn):
  
  
  
-HOST = "localhost"  # Static IP of the robot
+HOST = "0.0.0.0"  # Static IP of the robot
 PORTCONTROL = 10000  # Port on which the robot listen and send response to user
 PORTMONITORING = 10001 # Optional feedback messages port
+
+sommaTempi = 0
+iterazioni = 0
  
 TIMEOUT = 20 # Timeout for connection waiting, seconds
+
+param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
+os.sched_setscheduler(0, os.SCHED_FIFO, param)
+import math
  
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
     s.bind((HOST, PORTCONTROL))
@@ -97,11 +105,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         handleConnect(conn)
         lastMessage = time.time()
         while True:
-            # Checking if there are no more messages sent by client
-            if time.time() - lastMessage > TIMEOUT:
-                break
             data = conn.recv(1024).decode("ascii") 
             if len(data) != 0:
-                print(data)
+                tempoPassato = time.time() - lastMessage
+                lastMessage = tempoPassato + lastMessage
+                sommaTempi += tempoPassato
+                iterazioni += 1
+                media = sommaTempi/(iterazioni)
+                print(f"media = {media*1000000}")
                 handleData(data, conn)
-                lastMessage = time.time()

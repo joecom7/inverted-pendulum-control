@@ -46,6 +46,7 @@ int main() {
         for(int i=0;i<10;i++) {
             a = sqrt(pow(cos(encoder.get_angle_degrees()),a)) + 1.7 + sin(sqrt(a/3.6));
         }
+        robot.reset_error();
         /*
             Fine operazioni inutilmente complesse
         */
@@ -53,7 +54,6 @@ int main() {
             encoder.get_angle_degrees() , timer.get_mean_cycle_time(),
             timer.get_standard_deviation_cycle_time() , timer.get_max_cycle_time(),
             timer.get_min_cycle_time() , a);
-        robot.print_number(encoder.get_angle_degrees());
         /*
             Fine operazioni
         */

@@ -10,6 +10,9 @@ Timer::Timer(unsigned int target_cycle_time_microseconds, float delay_feedback_g
         sp.sched_priority = 99;
         sched_setscheduler( 0, SCHED_FIFO, &sp );
         current_cycle_start_microseconds = 0;
+        if(!aggressive_mode) {
+            time_stats.set_last_cycle_time(target_cycle_time_microseconds);
+        }
 }
 
 uint64_t Timer::microseconds() {
