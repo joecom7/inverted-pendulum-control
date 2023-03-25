@@ -60,23 +60,18 @@ def handleResetError(conn):
  
  
 def handleData(data, conn):
+    print(data)
     if data == "ActivateRobot\0":
         handleActivate(conn)
-        print("Activation handled\n")
     elif data == "DeactivateRobot\0":
         handleDeactivate(conn)
-        print("Deactivate handled\n")
     elif data == "Home\0":
         handleHome(conn)
-        print("Home handled\n")
     elif data == "ClearMotion\0":
         handleClearMotion(conn)
-        print("ClearMotion handled\n")
     elif data == "ResetError\0":
         handleResetError(conn)
-        print("ResetError handled\n")
     elif (data.find("MoveLin") != -1) and (data.find('\0') != -1):
-        print("MoveLin executed\n")
         conn.sendall(encode_ascii(("Motion received")))
     else: 
         return
@@ -112,5 +107,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
                 sommaTempi += tempoPassato
                 iterazioni += 1
                 media = sommaTempi/(iterazioni)
-                print(f"media = {media*1000000}")
+                #print(f"media = {media*1000000}")
                 handleData(data, conn)

@@ -50,7 +50,7 @@ int main() {
         /*
             Fine operazioni inutilmente complesse
         */
-        printf("enc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10u min_time=%-10u ignore=%-10.3f\n" , 
+        printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10u min_time=%-10u ignore=%-10.3f\n\n" , 
             encoder.get_angle_degrees() , timer.get_mean_cycle_time(),
             timer.get_standard_deviation_cycle_time() , timer.get_max_cycle_time(),
             timer.get_min_cycle_time() , a);

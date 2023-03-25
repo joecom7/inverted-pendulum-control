@@ -8,7 +8,12 @@ Robot::Robot(const char* robot_ip , bool bypass_robot) : BYPASS_ROBOT(bypass_rob
 }
 
 void Robot::connect() {
-    meca_connect();
+    bool connected = meca_connect();
+    while(!connected) {
+        sleep(1);
+        printf("robot non disponibile. ritento la connessione\n");
+        connected = meca_connect();
+    }
 }
 
 void Robot::activate() {

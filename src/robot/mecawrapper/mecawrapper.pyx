@@ -10,14 +10,16 @@ cdef public void meca_init(bool bypass_robot, const char* robot_ip):
         print(f"python : creo un oggetto robot con ip {robot_ip_str}")
         robot = MecademicRobot.RobotController(robot_ip_str)
 
-cdef public void meca_connect():
+cdef public bool meca_connect():
     global robot
     print("python : mi connetto al robot")
     connection_successful = robot.connect()
     if not connection_successful:
         print("python : la connessione al robot non è andata a buon fine")
+        return False
     else:
         print("python : la connessione al robot è andata a buon fine")
+        return True
 
 cdef public void meca_activate():
     global robot
