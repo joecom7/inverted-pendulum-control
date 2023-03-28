@@ -11,7 +11,7 @@ class TimerStats {
         double quadratic_sum_cycle_times;
         uint32_t max_cycle_time;
         uint32_t min_cycle_time;
-        int cycles;
+        uint32_t cycles;
     public:
         TimerStats(uint32_t base_cycle_time);
         void set_last_cycle_time(uint32_t last_cycle_time_microseconds);

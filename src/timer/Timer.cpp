@@ -1,6 +1,6 @@
 #include "Timer.hpp"
 
-Timer::Timer(unsigned int target_cycle_time_microseconds, float delay_feedback_gain, bool aggressive_mode) : 
+Timer::Timer(uint32_t target_cycle_time_microseconds, float delay_feedback_gain, bool aggressive_mode) : 
     TARGET_CYCLE_TIME_MICROSECONDS(target_cycle_time_microseconds) ,
     DELAY_FEEDBACK_GAIN(delay_feedback_gain) ,
     AGGRESSIVE_MODE(aggressive_mode) ,
