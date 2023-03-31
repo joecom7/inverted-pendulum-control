@@ -1,13 +1,54 @@
 
 # Documentazione
 
-# Encoder
+```mermaid
+    C4Context
+      title Interazione componenti
+        System(Main, "Main")
+        Boundary(robot, "Gestione robot") {
+            System(Robot, "Robot")
+        System(mecawrapper, "mecawrapper")
+        System(MecademicRobot, "MecademicRobot")
+    }
+
+    Boundary(encoder, "Gestione encoder") {
+        System(Encoder, "Encoder")
+        System(rotary_encoder, "rotary_encoder")
+    }
+
+    Boundary(timer, "Tempificazione") {
+        System(Timer, "Timer")
+        System(TimerStats, "TimerStats")
+    }
+
+        Rel(Main, Encoder, "usa")
+        Rel(Main, Timer, "usa")
+        Rel(Main, Robot, "usa")
+
+        BiRel(Encoder,rotary_encoder,"riceve messaggi quando l'encoder gira")
+
+        Rel(Robot, mecawrapper, "chiama l'interfaccia con python")
+        Rel(mecawrapper, MecademicRobot, "utilizza le funzioni della libreria python")
+
+        BiRel(Timer, TimerStats, "ottiene statistiche sulla tempificazione")
+
+        UpdateRelStyle(Main, Encoder, $offsetY="-10")
+        UpdateRelStyle(Main, Timer, $offsetY="-80",$offsetX="-250")
+        UpdateRelStyle(Main, Robot, $offsetY="-10")
+
+        UpdateLayoutConfig($c4ShapeInRow="6", $c4BoundaryInRow="4")
+        
+```
+
+
+
+# Gestione encoder
 
 Il funzionamento dell'encoder è astratto dalla classe Encoder, che dipende dalla classe re_decoder.
 
 ```mermaid
 ---
-title: Encoder
+title: Gestione encoder
 ---
 classDiagram
     class Encoder {
@@ -81,9 +122,11 @@ void Encoder::callback(int way) {
 }
 ```
 
+# Gestione robot
+
 ```mermaid
 ---
-title: Robot
+title: Gestione robot
 ---
 
 classDiagram
@@ -100,9 +143,12 @@ classDiagram
         + print_number(number : double)
     }
 ```
+
+# Tempificazione
+
 ```mermaid
 ---
-title: Timer
+title: Tempificazione
 ---
 classDiagram
     class Timer {
