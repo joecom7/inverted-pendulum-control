@@ -14,14 +14,14 @@
  */
 class Timer {
     private:
-        const unsigned int TARGET_CYCLE_TIME_MICROSECONDS;
+        const uint32_t TARGET_CYCLE_TIME_MICROSECONDS;
         const float DELAY_FEEDBACK_GAIN;
         const bool AGGRESSIVE_MODE;
         uint64_t current_cycle_start_microseconds;
         TimerStats time_stats;
         static uint64_t microseconds();
     public:
-        Timer(unsigned int target_cycle_time_microseconds , float delay_feedback_gain, bool aggressive_mode);
+        Timer(uint32_t target_cycle_time_microseconds , float delay_feedback_gain, bool aggressive_mode);
         void start_cycle();
         void end_cycle();
         double get_mean_cycle_time();
