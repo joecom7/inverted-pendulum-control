@@ -1,6 +1,7 @@
 import socket
 import time
 import os
+import random
  
 def encode_ascii(str):
     return bytes(str,'ascii') + b'\x00'
@@ -55,6 +56,11 @@ def handleResetError(conn):
     responseMessage = str("[There was no error to reset.]\0")
     conn.sendall(encode_ascii((responseCode + responseMessage)))
 
+def buildMessageVel(vel):
+    messCode = str("[2214]") # [2214][t, ẋ , ẏ , ż, ωx, ωy, ωz]
+    messPayload = str(f"[{time.time()*1000000}, {vel}, 0, 0, 0, 0, 0]\0")
+    return encode_ascii(messCode + messPayload)
+
  
  
  
@@ -92,20 +98,27 @@ os.sched_setscheduler(0, os.SCHED_FIFO, param)
 import math
  
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
-    s.bind((HOST, PORTCONTROL))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print(f"Connected by {addr}\n\n") # Confirm of connection
-        handleConnect(conn)
-        lastMessage = time.time()
-        while True:
-            data = conn.recv(1024).decode("ascii") 
-            if len(data) != 0:
-                tempoPassato = time.time() - lastMessage
-                lastMessage = tempoPassato + lastMessage
-                sommaTempi += tempoPassato
-                iterazioni += 1
-                media = sommaTempi/(iterazioni)
-                #print(f"media = {media*1000000}")
-                handleData(data, conn)
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s2:
+        s.bind((HOST, PORTCONTROL))
+        s2.bind((HOST, PORTMONITORING))
+        s2.listen()
+        s.listen()
+        conn, addr = s.accept()
+        conn2, addr2 = s2.accept()
+        with conn:
+            with conn2:
+                print(f"Connected by {addr} | Control side\n\n") # Confirm of connection
+                print(f"Connected by {addr2} | monitoring side\n\n")
+                handleConnect(conn)
+                lastMessage = time.time()
+                while True:
+                    data = conn.recv(1024).decode("ascii") 
+                    if len(data) != 0:
+                        tempoPassato = time.time() - lastMessage
+                        lastMessage = tempoPassato + lastMessage
+                        sommaTempi += tempoPassato
+                        iterazioni += 1
+                        media = sommaTempi/(iterazioni)
+                        #print(f"media = {media*1000000}")
+                        handleData(data, conn)
+                    conn2.sendall(buildMessageVel(random.randint(0, 100)))
