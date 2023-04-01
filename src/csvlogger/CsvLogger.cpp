@@ -6,6 +6,7 @@ CsvLogger::CsvLogger(const std::string filename) :FILENAME(filename.c_str()){
         printf("impossibile aprire il file di log. esco...");
         exit(1);
     }
+    file.precision(16);
 }
 
 CsvLogger::~CsvLogger() {
@@ -18,7 +19,7 @@ void CsvLogger::flush() {
 }
 
 CsvLogger& CsvLogger::operator << (const double new_val) {
-    file << std::scientific << new_val << " , ";
+    file << std::scientific << new_val << ",";
     return *this;
 }
 

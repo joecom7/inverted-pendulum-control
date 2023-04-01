@@ -3,7 +3,7 @@
 // commentare per non usare localhost come ip del robot
 #define ROBOT_IP_IS_LOCALHOST
 
-const uint32_t Constants::TARGET_CYCLE_TIME_MICROSECONDS = 10000;
+const uint32_t Constants::TARGET_CYCLE_TIME_MICROSECONDS = 5000;
 const uint8_t Constants::ENCODER_CLK_PIN = 17;
 const uint8_t Constants::ENCODER_DT_PIN = 18;
 const uint16_t Constants::ENCODER_PPR = 1024;
