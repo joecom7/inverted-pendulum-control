@@ -14,6 +14,7 @@ namespace Constants {
     extern const bool BYPASS_ROBOT;
     extern const bool TIMER_AGGRESSIVE_MODE;
     extern const char* ROBOT_IP;
+    extern const char* LOGFILE_NAME;
 }
 
 #endif

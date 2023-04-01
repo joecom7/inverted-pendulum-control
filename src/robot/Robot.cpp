@@ -1,4 +1,5 @@
 #include "Robot.hpp"
+#include "mecawrapper/mecawrapper.h"
 
 Robot::Robot(const char* robot_ip , bool bypass_robot) : BYPASS_ROBOT(bypass_robot){
     PyImport_AppendInittab("mecawrapper", PyInit_mecawrapper);

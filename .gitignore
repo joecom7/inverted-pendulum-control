@@ -11,3 +11,4 @@ stabilizer
 src/cythontest/setup.py
 src/robot/mecawrapper/mecawrapper.c
 src/robot/mecawrapper/mecawrapper.h
+pendulum.csv

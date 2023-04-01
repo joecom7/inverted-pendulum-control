@@ -2,7 +2,6 @@
 #define ENCODER_H
 
 #include "rotary_encoder/rotary_encoder.hpp"
-#include <math.h>
 
 class Encoder {
     private:

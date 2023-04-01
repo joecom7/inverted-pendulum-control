@@ -3,6 +3,8 @@ from libcpp cimport bool
 
 cdef public void meca_init(bool bypass_robot, const char* robot_ip):
     global robot
+    global BYPASS_ROBOT
+    BYPASS_ROBOT = bypass_robot
     robot_ip_str = robot_ip.decode()
     if not bypass_robot:
         print(f"python : importo il modulo MecademicRobot")
@@ -12,6 +14,9 @@ cdef public void meca_init(bool bypass_robot, const char* robot_ip):
 
 cdef public bool meca_connect():
     global robot
+    global BYPASS_ROBOT
+    if BYPASS_ROBOT:
+        return True
     print("python : mi connetto al robot")
     connection_successful = robot.connect()
     if not connection_successful:

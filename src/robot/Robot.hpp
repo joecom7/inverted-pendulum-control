@@ -1,8 +1,6 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
-#include "mecawrapper/mecawrapper.h"
-
 class Robot {
     private:
         static void py_init(const char* robot_ip , bool bypass_robot);
