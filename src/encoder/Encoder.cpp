@@ -1,5 +1,7 @@
 #include "Encoder.hpp"
 
+#include <math.h>
+
 int Encoder::PPR = 0;
 int Encoder::pos = 0;
 int Encoder::MAX_POS = 0;

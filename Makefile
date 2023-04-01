@@ -1,5 +1,5 @@
-OBJS	= src/encoder/rotary_encoder/rotary_encoder.o src/encoder/Encoder.o src/timer/timerStats/TimerStats.o src/timer/Timer.o stabilizer.o src/robot/mecawrapper/mecawrapper.o src/robot/Robot.o Constants.o
-SOURCE	= src/encoder/rotary_encoder/rotary_encoder.cpp src/encoder/Encoder.cpp src/timer/timerStats/TimerStats.cpp src/timer/Timer.cpp stabilizer.cpp src/robot/mecawrapper/mecawrapper.c src/robot/Robot.cpp Constants.cpp
+OBJS	= src/encoder/rotary_encoder/rotary_encoder.o src/encoder/Encoder.o src/timer/timerStats/TimerStats.o src/timer/Timer.o stabilizer.o src/robot/mecawrapper/mecawrapper.o src/robot/Robot.o Constants.o src/csvlogger/CsvLogger.o
+SOURCE	= src/encoder/rotary_encoder/rotary_encoder.cpp src/encoder/Encoder.cpp src/timer/timerStats/TimerStats.cpp src/timer/Timer.cpp stabilizer.cpp src/robot/mecawrapper/mecawrapper.c src/robot/Robot.cpp Constants.cpp src/csvlogger/CsvLogger.cpp
 
 OUT	= stabilizer
 CC	 = g++
@@ -35,3 +35,6 @@ stabilizer.o: stabilizer.cpp src/robot/mecawrapper/mecawrapper.c Constants.hpp
 
 src/robot/mecawrapper/mecawrapper.o: src/robot/mecawrapper/mecawrapper.c
 	$(CC) -o src/robot/mecawrapper/mecawrapper.o $(FLAGS) src/robot/mecawrapper/mecawrapper.c $(LFLAGS)
+
+src/csvlogger/CsvLogger.o: src/csvlogger/CsvLogger.cpp
+	$(CC) -o src/csvlogger/CsvLogger.o $(FLAGS) src/csvlogger/CsvLogger.cpp
