@@ -11,3 +11,5 @@ except Exception:
    print("error")
 else:
    print("no error")
+
+joints, pose, speed, robot_status = robotFeedback.get_data()

@@ -7,13 +7,15 @@ from threading import Thread
  
 def encode_ascii(str):
     return bytes(str,'ascii') + b'\x00'
+
+start_of_program = time.time()
  
  
 def handleConnect(conn):
  
     conn.sendall(encode_ascii((str("[3000][Connected to Meca500 127.0.0.1]"))))
  
-    timestamp = time.time() / 1000000
+    timestamp = time.time() - start_of_program
     #temp = str("[2310][") + str(timestamp)
     #conn.sendall(encode_ascii((str(temp + str(", 0, 0]")))))
 #
@@ -62,7 +64,7 @@ def handleResetError(conn):
 
 def buildMessageVel(vel):
     messCode = str("[2214]") # [2214][t, ẋ , ẏ , ż, ωx, ωy, ωz]
-    messPayload = str(f"[{time.time()*1000000}, {vel}, 0, 0, 0, 0, 0]")
+    messPayload = str(f"[{time.time() - start_of_program}, {vel}, 0, 0, 0, 0, 0]")
     return encode_ascii(messCode + messPayload)
 
  
@@ -87,6 +89,8 @@ def handleData(data, conn):
         return
 
 def feedbackLoop():
+    param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
+    os.sched_setscheduler(0, os.SCHED_FIFO, param)
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s2: 
         s2.bind((HOST, PORTMONITORING))
         s2.listen()
@@ -94,8 +98,10 @@ def feedbackLoop():
         with conn2:
             print(f"Connected by {addr2} | monitoring side\n\n")
             while True:
-                conn2.sendall(buildMessageVel(random.randint(0, 100)))
-                time.sleep(0.1)
+                message = buildMessageVel(random.randint(0, 100))
+                #print(message)
+                conn2.sendall(message)
+                time.sleep(0.01)
  
  
  
@@ -108,11 +114,12 @@ iterazioni = 0
  
 TIMEOUT = 20 # Timeout for connection waiting, seconds
 
+thread = Thread(target=feedbackLoop)
+thread.start()
+
 param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
 os.sched_setscheduler(0, os.SCHED_FIFO, param)
-thread = Thread(target=feedbackLoop)
 
-thread.start()
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
     s.bind((HOST, PORTCONTROL))
     s.listen()

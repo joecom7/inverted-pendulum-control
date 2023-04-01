@@ -27,29 +27,37 @@ int main() {
     else {
         delay_feedback_gain = Constants::DELAY_FEEDBACK_GAIN;
     }
-    signal(2,cleanup);
     robot.connect();
     robot.activate();
     robot.home();
-    Timer timer(Constants::TARGET_CYCLE_TIME_MICROSECONDS , delay_feedback_gain,
-        Constants::TIMER_AGGRESSIVE_MODE);
     Encoder encoder(Constants::ENCODER_CLK_PIN, 
         Constants::ENCODER_DT_PIN, Constants::ENCODER_PPR,
         Constants::ENCODER_START_ANGLE_DEGREES);
+
+    Timer timer(Constants::TARGET_CYCLE_TIME_MICROSECONDS , delay_feedback_gain,
+        Constants::TIMER_AGGRESSIVE_MODE);
+
+    double current_encoder_angle, current_robot_velocity;
+
+    signal(2,cleanup);
     
     while(true) {
         timer.start_cycle();
-        double current_encoder_angle = encoder.get_angle();
+
         /*
             Qui andranno le operazioni da eseguire in ciclo
         */
 
-       csvLogger << current_encoder_angle;
+        current_encoder_angle = encoder.get_angle();
+        current_robot_velocity = robot.get_velocity();
 
-        printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10u min_time=%-10u\n\n" , 
+        csvLogger << timer.get_seconds_from_program_start();
+        csvLogger << current_encoder_angle;
+        csvLogger << current_robot_velocity;
+
+        printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f robot_velocity=%-10.3f\n\n" , 
             current_encoder_angle , timer.get_mean_cycle_time(),
-            timer.get_standard_deviation_cycle_time() , timer.get_max_cycle_time(),
-            timer.get_min_cycle_time());
+            timer.get_standard_deviation_cycle_time() , current_robot_velocity);
 
         /*
             Fine operazioni

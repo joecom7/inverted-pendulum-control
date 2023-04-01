@@ -1,7 +1,10 @@
 import cython
 from libcpp cimport bool
+import os
 
 cdef public void meca_init(bool bypass_robot, const char* robot_ip):
+    param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
+    os.sched_setscheduler(0, os.SCHED_FIFO, param)
     global robotController
     global robotFeedback
     global BYPASS_ROBOT
@@ -63,3 +66,8 @@ cdef public void meca_reset_error():
 
 cdef public void print_velocity(double n):
     print(f"Sono Python! Ho ricevuto il numero {n}")
+
+cdef public double meca_get_velocity():
+    global robotFeedback
+    _, _, speed, _ = robotFeedback.get_data(wait_for_new_messages=False)
+    return speed[1] # cambiare nel caso la velocità interessata non sia la x

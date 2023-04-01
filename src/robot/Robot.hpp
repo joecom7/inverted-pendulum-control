@@ -14,6 +14,7 @@ class Robot {
         void disconnect();
         void reset_error();
         void print_number(double number);
+        double get_velocity();
 };
 
 #endif

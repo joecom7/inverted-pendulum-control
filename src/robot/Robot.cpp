@@ -41,3 +41,7 @@ void Robot::reset_error() {
 void Robot::print_number(double number) {
     print_velocity(number);
 }
+
+double Robot::get_velocity() {
+    return meca_get_velocity();
+}

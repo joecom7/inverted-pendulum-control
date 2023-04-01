@@ -3,7 +3,7 @@
 Timer::Timer(uint32_t target_cycle_time_microseconds, float delay_feedback_gain, bool aggressive_mode) : 
     TARGET_CYCLE_TIME_MICROSECONDS(target_cycle_time_microseconds) ,
     DELAY_FEEDBACK_GAIN(delay_feedback_gain) ,
-    AGGRESSIVE_MODE(aggressive_mode) ,
+    AGGRESSIVE_MODE(aggressive_mode) , PROGRAM_START_MICROSECONDS(microseconds()) ,
     time_stats(target_cycle_time_microseconds) {
         struct sched_param sp;
         memset( &sp, 0, sizeof(sp) );
@@ -58,4 +58,8 @@ uint32_t Timer::get_max_cycle_time() {
 
 uint32_t Timer::get_min_cycle_time() {
     return time_stats.get_min();
+}
+
+double Timer::get_seconds_from_program_start() {
+    return (double)(microseconds() - PROGRAM_START_MICROSECONDS)*1e-6;
 }
