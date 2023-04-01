@@ -10,7 +10,7 @@ const uint16_t Constants::ENCODER_PPR = 1024;
 const uint8_t Constants::ENCODER_START_ANGLE_DEGREES = 0;
 const float Constants::DELAY_FEEDBACK_GAIN =1.1;
 const float Constants::AGGRESSIVE_DELAY_FEEDBACK_GAIN =100;
-const bool Constants::BYPASS_ROBOT = true;
+const bool Constants::BYPASS_ROBOT = false;
 const bool Constants::TIMER_AGGRESSIVE_MODE = true;
 
 #ifdef ROBOT_IP_IS_LOCALHOST

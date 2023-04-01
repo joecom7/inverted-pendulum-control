@@ -1,0 +1,3 @@
+Cython
+catkin_pkg
+git+https://github.com/marcocostanzo/mecademic_pydriver.git@v8-beta

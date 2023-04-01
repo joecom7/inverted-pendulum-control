@@ -2,6 +2,8 @@ import socket
 import time
 import os
 import random
+import math
+from threading import Thread
  
 def encode_ascii(str):
     return bytes(str,'ascii') + b'\x00'
@@ -33,32 +35,34 @@ def handleConnect(conn):
 def handleActivate(conn):
     print("activate")
     responseCode = str("[2000]") # [2000][Motors activated.]
-    responseMessage = str("[Motors activated.]\0")
-    conn.sendall(encode_ascii((responseCode + responseMessage)))
+    responseMessage = str("[Motors activated.]")
+    response = encode_ascii((responseCode + responseMessage))
+    print(response)
+    conn.sendall(response)
  
 def handleHome(conn): # [2002][Homing done.]
     responseCode = str("[2002]")
-    responseMessage = str("[Homing done.]\0")
+    responseMessage = str("[Homing done.]")
     conn.sendall(encode_ascii((responseCode + responseMessage)))
  
 def handleDeactivate(conn): # [2004][Motors deactivated.]
     responseCode = str("[2004]")
-    responseMessage = str("[Motors deactivated.]\0")
+    responseMessage = str("[Motors deactivated.]")
     conn.sendall(encode_ascii((responseCode + responseMessage)))
  
 def handleClearMotion(conn): # [2044][The motion was cleared.]
     responseCode = str("[2044]")
-    responseMessage = str("[The motion was cleared.]\0")
+    responseMessage = str("[The motion was cleared.]")
     conn.sendall(encode_ascii((responseCode + responseMessage)))
 
 def handleResetError(conn):
     responseCode = str("[2006]") # [2006][There was no error to reset.]
-    responseMessage = str("[There was no error to reset.]\0")
+    responseMessage = str("[There was no error to reset.]")
     conn.sendall(encode_ascii((responseCode + responseMessage)))
 
 def buildMessageVel(vel):
     messCode = str("[2214]") # [2214][t, ẋ , ẏ , ż, ωx, ωy, ωz]
-    messPayload = str(f"[{time.time()*1000000}, {vel}, 0, 0, 0, 0, 0]\0")
+    messPayload = str(f"[{time.time()*1000000}, {vel}, 0, 0, 0, 0, 0]")
     return encode_ascii(messCode + messPayload)
 
  
@@ -81,6 +85,17 @@ def handleData(data, conn):
         conn.sendall(encode_ascii(("Motion received")))
     else: 
         return
+
+def feedbackLoop():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s2: 
+        s2.bind((HOST, PORTMONITORING))
+        s2.listen()
+        conn2, addr2 = s2.accept()
+        with conn2:
+            print(f"Connected by {addr2} | monitoring side\n\n")
+            while True:
+                conn2.sendall(buildMessageVel(random.randint(0, 100)))
+                time.sleep(0.1)
  
  
  
@@ -95,18 +110,15 @@ TIMEOUT = 20 # Timeout for connection waiting, seconds
 
 param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
 os.sched_setscheduler(0, os.SCHED_FIFO, param)
-import math
- 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s,socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s2: 
+thread = Thread(target=feedbackLoop)
+
+thread.start()
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
     s.bind((HOST, PORTCONTROL))
-    s2.bind((HOST, PORTMONITORING))
-    s2.listen()
     s.listen()
     conn, addr = s.accept()
-    conn2, addr2 = s2.accept()
-    with conn:#, conn2:
+    with conn:
         print(f"Connected by {addr} | Control side\n\n") # Confirm of connection
-        print(f"Connected by {addr2} | monitoring side\n\n")
         handleConnect(conn)
         lastMessage = time.time()
         while True:
@@ -119,4 +131,4 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s,socket.socket(socket
                 media = sommaTempi/(iterazioni)
                 #print(f"media = {media*1000000}")
                 handleData(data, conn)
-            conn2.sendall(buildMessageVel(random.randint(0, 100)))
+            
