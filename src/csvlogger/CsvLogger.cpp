@@ -19,7 +19,7 @@ void CsvLogger::flush() {
 }
 
 CsvLogger& CsvLogger::operator << (const double new_val) {
-    file << std::scientific << new_val << ",";
+    file << std::scientific << new_val << ',';
     return *this;
 }
 
