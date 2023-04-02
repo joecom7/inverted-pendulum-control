@@ -3,6 +3,10 @@
 
 #include <cstdint>
 
+#define ROBOT_CONF 1,1,-1
+#define STARTING_ROBOT_POSITION 0,-240,170
+#define STARTING_ROBOT_ORIENTATION 90,0,0
+
 namespace Constants {
     extern const uint32_t TARGET_CYCLE_TIME_MICROSECONDS;
     extern const uint8_t ENCODER_CLK_PIN;

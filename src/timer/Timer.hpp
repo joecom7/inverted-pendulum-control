@@ -17,13 +17,14 @@ class Timer {
         const uint32_t TARGET_CYCLE_TIME_MICROSECONDS;
         const float DELAY_FEEDBACK_GAIN;
         const bool AGGRESSIVE_MODE;
-        const uint64_t PROGRAM_START_MICROSECONDS;
+        uint64_t PROGRAM_START_MICROSECONDS;
         uint64_t current_cycle_start_microseconds;
         TimerStats time_stats;
         static uint64_t microseconds();
         uint32_t time_to_sleep();
     public:
         Timer(uint32_t target_cycle_time_microseconds , float delay_feedback_gain, bool aggressive_mode);
+        void set_starting_timestamp();
         void start_cycle();
         void end_cycle();
         double get_mean_cycle_time();
