@@ -15,6 +15,7 @@ class Robot {
         void reset_error();
         void print_number(double number);
         double get_velocity();
+        void move_lin_vel_trf(double velocity);
 };
 
 #endif

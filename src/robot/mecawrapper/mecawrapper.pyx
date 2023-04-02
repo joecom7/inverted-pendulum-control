@@ -2,6 +2,9 @@ import cython
 from libcpp cimport bool
 import os
 
+lastSpeed = 0
+MOVEMENT_AXIS = 0 # cambiare nel caso la velocità interessata non sia la x
+
 cdef public void meca_init(bool bypass_robot, const char* robot_ip):
     param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
     os.sched_setscheduler(0, os.SCHED_FIFO, param)
@@ -69,5 +72,22 @@ cdef public void print_velocity(double n):
 
 cdef public double meca_get_velocity():
     global robotFeedback
+    global lastSpeed
     _, _, speed, _ = robotFeedback.get_data(wait_for_new_messages=False)
-    return speed[1] # cambiare nel caso la velocità interessata non sia la x
+    try:
+        axisSpeed = speed[1+MOVEMENT_AXIS]
+    except TypeError:
+        axisSpeed = lastSpeed
+    lastSpeed = axisSpeed
+    return axisSpeed
+
+cdef public void meca_move_lin_vel_trf(double vel):
+    global robotController
+    if MOVEMENT_AXIS == 0:
+        p_dot = (vel,0,0)
+    elif MOVEMENT_AXIS == 1:
+        p_dot = (0,vel,0)
+    elif MOVEMENT_AXIS == 2:
+        p_dot = (0,0,vel)
+    w = (0,0,0)
+    robotController.MoveLinVelTRF(p_dot,w)

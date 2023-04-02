@@ -40,8 +40,17 @@ void Timer::start_cycle() {
         time_stats.set_last_cycle_time(current_cycle_start_microseconds - last_cycle_start_microseconds);
 }
 
+uint32_t Timer::time_to_sleep() {
+    uint32_t estimated_delay = (Timer::microseconds()-current_cycle_start_microseconds);
+    estimated_delay += DELAY_FEEDBACK_GAIN*(time_stats.get_mean() - TARGET_CYCLE_TIME_MICROSECONDS);
+    if(estimated_delay > TARGET_CYCLE_TIME_MICROSECONDS)
+        estimated_delay = TARGET_CYCLE_TIME_MICROSECONDS;
+    uint32_t calculated_time = TARGET_CYCLE_TIME_MICROSECONDS - estimated_delay;
+    return calculated_time;
+}
+
 void Timer::end_cycle() {
-    usleep(TARGET_CYCLE_TIME_MICROSECONDS - (Timer::microseconds()-current_cycle_start_microseconds) - DELAY_FEEDBACK_GAIN*(time_stats.get_mean() - TARGET_CYCLE_TIME_MICROSECONDS));
+    usleep(time_to_sleep());
 }
 
 double Timer::get_mean_cycle_time() {
@@ -62,4 +71,8 @@ uint32_t Timer::get_min_cycle_time() {
 
 double Timer::get_seconds_from_program_start() {
     return (double)(microseconds() - PROGRAM_START_MICROSECONDS)*1e-6;
+}
+
+uint64_t Timer::get_microseconds_from_program_start() {
+    return microseconds() - PROGRAM_START_MICROSECONDS;
 }

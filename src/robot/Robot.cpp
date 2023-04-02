@@ -45,3 +45,8 @@ void Robot::print_number(double number) {
 double Robot::get_velocity() {
     return meca_get_velocity();
 }
+
+// N.B. La velocità è in metri al secondo
+void Robot::move_lin_vel_trf(double velocity) {
+    meca_move_lin_vel_trf(velocity*1e+3);
+}

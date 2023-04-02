@@ -48,6 +48,7 @@ def handleHome(conn): # [2002][Homing done.]
     conn.sendall(encode_ascii((responseCode + responseMessage)))
  
 def handleDeactivate(conn): # [2004][Motors deactivated.]
+    print("activate")
     responseCode = str("[2004]")
     responseMessage = str("[Motors deactivated.]")
     conn.sendall(encode_ascii((responseCode + responseMessage)))
@@ -72,7 +73,7 @@ def buildMessageVel(vel):
  
  
 def handleData(data, conn):
-    print(data)
+    #print(data)
     if data == "ActivateRobot\0":
         handleActivate(conn)
     elif data == "DeactivateRobot\0":
@@ -83,14 +84,12 @@ def handleData(data, conn):
         handleClearMotion(conn)
     elif data == "ResetError\0":
         handleResetError(conn)
-    elif (data.find("MoveLin") != -1) and (data.find('\0') != -1):
-        conn.sendall(encode_ascii(("Motion received")))
+    #elif (data.find("MoveLin") != -1) and (data.find('\0') != -1):
+    #    conn.sendall(encode_ascii(("Motion received")))
     else: 
         return
 
 def feedbackLoop():
-    param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
-    os.sched_setscheduler(0, os.SCHED_FIFO, param)
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s2: 
         s2.bind((HOST, PORTMONITORING))
         s2.listen()
@@ -101,7 +100,7 @@ def feedbackLoop():
                 message = buildMessageVel(random.randint(0, 100))
                 #print(message)
                 conn2.sendall(message)
-                time.sleep(0.01)
+                time.sleep(0.004)
  
  
  
