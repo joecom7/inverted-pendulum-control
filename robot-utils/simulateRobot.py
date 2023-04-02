@@ -8,6 +8,8 @@ from threading import Thread
 def encode_ascii(str):
     return bytes(str,'ascii') + b'\x00'
 
+eobCounter = 0
+
 start_of_program = time.time()
  
  
@@ -40,11 +42,13 @@ def handleActivate(conn):
     responseMessage = str("[Motors activated.]")
     response = encode_ascii((responseCode + responseMessage))
     print(response)
+    time.sleep(2)
     conn.sendall(response)
  
 def handleHome(conn): # [2002][Homing done.]
     responseCode = str("[2002]")
     responseMessage = str("[Homing done.]")
+    time.sleep(1)
     conn.sendall(encode_ascii((responseCode + responseMessage)))
  
 def handleDeactivate(conn): # [2004][Motors deactivated.]
@@ -61,6 +65,16 @@ def handleClearMotion(conn): # [2044][The motion was cleared.]
 def handleResetError(conn):
     responseCode = str("[2006]") # [2006][There was no error to reset.]
     responseMessage = str("[There was no error to reset.]")
+    conn.sendall(encode_ascii((responseCode + responseMessage)))
+    
+def handleStatusRobot(conn):
+    global eobCounter
+    responseCode = str("[2007]") # [2006][There was no error to reset.]
+    if eobCounter < 2:
+        responseMessage = str("[1,1,1,0,0,0,0]")
+    else :
+        responseMessage = str("[1,1,1,0,0,1,1]")
+    eobCounter += 1
     conn.sendall(encode_ascii((responseCode + responseMessage)))
 
 def buildMessageVel(vel):
@@ -84,6 +98,8 @@ def handleData(data, conn):
         handleClearMotion(conn)
     elif data == "ResetError\0":
         handleResetError(conn)
+    elif data == "GetStatusRobot\0":
+        handleStatusRobot(conn)
     #elif (data.find("MoveLin") != -1) and (data.find('\0') != -1):
     #    conn.sendall(encode_ascii(("Motion received")))
     else: 

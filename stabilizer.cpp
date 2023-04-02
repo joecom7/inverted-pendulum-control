@@ -28,9 +28,7 @@ int main() {
     else {
         delay_feedback_gain = Constants::DELAY_FEEDBACK_GAIN;
     }
-    robot.connect();
-    robot.activate();
-    robot.home();
+
     Encoder encoder(Constants::ENCODER_CLK_PIN, 
         Constants::ENCODER_DT_PIN, Constants::ENCODER_PPR,
         Constants::ENCODER_START_ANGLE_DEGREES);
@@ -42,6 +40,13 @@ int main() {
     signal(6,cleanup);
 
     FeedbackController feedbackController;
+
+    // Comandi per il setup del robot
+    robot.connect();
+    robot.activate();
+    robot.home();
+    robot.set_conf(ROBOT_CONF);
+    robot.move_pose(STARTING_ROBOT_POSITION,STARTING_ROBOT_ORIENTATION);
 
     Timer timer(Constants::TARGET_CYCLE_TIME_MICROSECONDS , delay_feedback_gain,
         Constants::TIMER_AGGRESSIVE_MODE);

@@ -91,3 +91,21 @@ cdef public void meca_move_lin_vel_trf(double vel):
         p_dot = (0,0,vel)
     w = (0,0,0)
     robotController.MoveLinVelTRF(p_dot,w)
+
+cdef public void meca_set_conf(int c1, int c2, int c3):
+    global robotController
+    robotController.SetConf(c1,c2,c3)
+
+cdef public void meca_move_pose(double x, double y, double z, double alpha, double beta, double gamma):
+    global robotController
+    position = (x,y,z)
+    orientation = (alpha, beta, gamma)
+    robotController.MovePose(position, orientation)
+
+cdef public bool meca_block_ended():
+    global robotController
+    status = robotController.GetStatusRobot()
+    if status.get("eob") == 1:
+        return True
+    else:
+        return False
