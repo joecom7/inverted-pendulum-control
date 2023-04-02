@@ -105,6 +105,8 @@ def handleData(data, conn):
         handleResetError(conn)
     elif data == "GetStatusRobot\0":
         handleStatusRobot(conn)
+    elif (data.find("MovePose") != -1) and (data.find('\0') != -1):
+        print(data)
     #elif (data.find("MoveLin") != -1) and (data.find('\0') != -1):
     #    conn.sendall(encode_ascii(("Motion received")))
     else: 
@@ -139,8 +141,8 @@ TIMEOUT = 20 # Timeout for connection waiting, seconds
 thread = Thread(target=feedbackLoop)
 thread.start()
 
-param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
-os.sched_setscheduler(0, os.SCHED_FIFO, param)
+#param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
+#os.sched_setscheduler(0, os.SCHED_FIFO, param)
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
     s.bind((HOST, PORTCONTROL))

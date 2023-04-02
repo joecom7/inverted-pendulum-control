@@ -121,3 +121,7 @@ cdef public bool meca_block_ended():
         return True
     else:
         return False
+
+cdef public void meca_set_monitoring_interval(double monitoring_interval):
+    global robotController
+    robotController.SetMonitoringInterval(monitoring_interval);

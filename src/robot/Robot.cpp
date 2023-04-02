@@ -1,7 +1,8 @@
 #include "Robot.hpp"
 #include "mecawrapper/mecawrapper.h"
 
-Robot::Robot(const char* robot_ip , bool bypass_robot) : BYPASS_ROBOT(bypass_robot){
+Robot::Robot(const char* robot_ip , double pos_limit,bool bypass_robot) :
+    BYPASS_ROBOT(bypass_robot) , POS_LIMIT(pos_limit){
     PyImport_AppendInittab("mecawrapper", PyInit_mecawrapper);
     Py_Initialize();
     PyImport_ImportModule("mecawrapper");
@@ -43,16 +44,20 @@ void Robot::print_number(double number) {
 }
 
 double Robot::get_velocity() {
-    return meca_get_velocity();
+    return meca_get_velocity()*1e-3;
 }
 
 double Robot::get_position() {
-    return meca_get_velocity();
+    return meca_get_velocity()*1e-3;
 }
 
 // N.B. La velocità è in metri al secondo
 void Robot::move_lin_vel_trf(double velocity) {
-    meca_move_lin_vel_trf(velocity*1e+3);
+    bool out_of_range_right = ((get_position()>POS_LIMIT) && (velocity > 0));
+    bool out_of_range_left = ((get_position()<(-POS_LIMIT)) && (velocity < 0));
+    if((!out_of_range_right)&&(!out_of_range_left)) {
+        meca_move_lin_vel_trf(velocity*1e+3);
+    }
 }
 
 void Robot::set_conf(short c1, short c2, short c3) {
@@ -69,4 +74,8 @@ void Robot::move_pose(double x, double y, double z, double alpha, double beta, d
 
 bool Robot::block_ended() {
     return meca_block_ended();
+}
+
+void Robot::set_monitoring_interval(uint32_t monitoring_interval_microseconds) {
+    meca_set_monitoring_interval(((double)monitoring_interval_microseconds)*1e-6);
 }

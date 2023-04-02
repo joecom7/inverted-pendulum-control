@@ -8,7 +8,7 @@
 #include "src/controller/FeedbackController.hpp"
 #include "signal.h"
 
-Robot robot(Constants::ROBOT_IP , Constants::BYPASS_ROBOT);
+Robot robot(Constants::ROBOT_IP , Constants::ROBOT_POS_LIMIT, Constants::BYPASS_ROBOT);
 CsvLogger csvLogger(Constants::LOGFILE_NAME);
 
 void cleanup(int signum) {
@@ -51,6 +51,7 @@ int main() {
     robot.home();
     robot.set_conf(ROBOT_CONF);
     robot.move_pose(STARTING_ROBOT_POSITION,STARTING_ROBOT_ORIENTATION);
+    robot.set_monitoring_interval(Constants::MONITORING_INTERVAL_MICROSECONDS);
     timestamp_microseconds = timer.get_microseconds_from_program_start();
     current_encoder_angle = encoder.get_angle();
     current_robot_velocity = robot.get_velocity();

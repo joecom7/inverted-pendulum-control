@@ -15,6 +15,8 @@ namespace Constants {
     extern const uint8_t ENCODER_START_ANGLE_DEGREES;
     extern const float DELAY_FEEDBACK_GAIN;
     extern const float AGGRESSIVE_DELAY_FEEDBACK_GAIN;
+    extern const double ROBOT_POS_LIMIT;
+    extern const uint32_t MONITORING_INTERVAL_MICROSECONDS;
     extern const bool BYPASS_ROBOT;
     extern const bool TIMER_AGGRESSIVE_MODE;
     extern const char* ROBOT_IP;
