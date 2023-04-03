@@ -5,9 +5,11 @@
 
 class Robot {
     private:
+        static uint32_t MONITORING_INTERVAL_MICROSECONDS;
         static void py_init(const char* robot_ip , bool bypass_robot);
         const bool BYPASS_ROBOT;
         const double POS_LIMIT;
+        static void update_data();
         bool block_ended();
     public:
         Robot(const char* robot_ip , double pos_limit,bool bypass_robot);

@@ -1,4 +1,5 @@
 import socket
+import sys
 import time
 import os
 import random
@@ -52,7 +53,7 @@ def handleHome(conn): # [2002][Homing done.]
     conn.sendall(encode_ascii((responseCode + responseMessage)))
  
 def handleDeactivate(conn): # [2004][Motors deactivated.]
-    print("activate")
+    print("deactivate")
     responseCode = str("[2004]")
     responseMessage = str("[Motors deactivated.]")
     conn.sendall(encode_ascii((responseCode + responseMessage)))
@@ -70,7 +71,7 @@ def handleResetError(conn):
 def handleStatusRobot(conn):
     global eobCounter
     responseCode = str("[2007]") # [2006][There was no error to reset.]
-    if eobCounter < 2:
+    if eobCounter < 0:
         responseMessage = str("[1,1,1,0,0,0,0]")
     else :
         responseMessage = str("[1,1,1,0,0,1,1]")
@@ -83,7 +84,7 @@ def buildMessageVel(vel):
     return encode_ascii(messCode + messPayload)
 
 def buildMessagePose(pos):
-    messCode = str("[2027]") # [2027][t, x , y , z, alpha, beta, gamma]
+    messCode = str("[2201]") # [2201][t, x , y , z, alpha, beta, gamma]
     messPayload = str(f"[{time.time() - start_of_program}, {pos}, 0, 0, 0, 0, 0]")
     return encode_ascii(messCode + messPayload)
 
@@ -109,7 +110,7 @@ def handleData(data, conn):
         print(data)
     #elif (data.find("MoveLin") != -1) and (data.find('\0') != -1):
     #    conn.sendall(encode_ascii(("Motion received")))
-    else: 
+    else:
         return
 
 def feedbackLoop():
@@ -141,8 +142,8 @@ TIMEOUT = 20 # Timeout for connection waiting, seconds
 thread = Thread(target=feedbackLoop)
 thread.start()
 
-#param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
-#os.sched_setscheduler(0, os.SCHED_FIFO, param)
+param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
+os.sched_setscheduler(0, os.SCHED_FIFO, param)
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
     s.bind((HOST, PORTCONTROL))

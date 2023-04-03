@@ -50,12 +50,6 @@ int main() {
     robot.set_conf(ROBOT_CONF);
     robot.move_pose(STARTING_ROBOT_POSITION,STARTING_ROBOT_ORIENTATION);
     robot.set_monitoring_interval(Constants::MONITORING_INTERVAL_MICROSECONDS);
-    timestamp_microseconds = timer.get_microseconds_from_program_start();
-    current_encoder_angle = encoder.get_angle();
-    current_robot_velocity = robot.get_velocity();
-    current_robot_position = robot.get_position();
-    new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds,current_encoder_angle);
-    robot.move_lin_vel_trf(0.0);
 
     timer.set_starting_timestamp();
     

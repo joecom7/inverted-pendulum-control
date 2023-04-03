@@ -73,8 +73,10 @@ void Robot::move_pose(double x, double y, double z, double alpha, double beta, d
 }
 
 Robot::~Robot() {
+    meca_end_program();
     printf("deactivating robot\n");
     deactivate();
+    usleep(1e+6);
     printf("disconnecting robot\n");
     disconnect();
 }

@@ -1,10 +1,14 @@
 import cython
 from libcpp cimport bool
 import os
+import threading
+import time
 
 lastSpeed = 0
 lastPosition = 0
 MOVEMENT_AXIS = 0 # cambiare nel caso la velocità interessata non sia la x
+program_ended = False
+rt_monitoring_interval = 5e-3
 
 cdef public void meca_init(bool bypass_robot, const char* robot_ip):
     param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
@@ -71,27 +75,29 @@ cdef public void meca_reset_error():
 cdef public void print_velocity(double n):
     print(f"Sono Python! Ho ricevuto il numero {n}")
 
-cdef public double meca_get_velocity():
+cdef public void meca_update_data():
     global robotFeedback
     global lastSpeed
-    _, _, speed, _ = robotFeedback.get_data(wait_for_new_messages=False)
+    global lastPosition
+    _, pose, speed, _ = robotFeedback.get_data(wait_for_new_messages=False)
     try:
         axisSpeed = speed[1+MOVEMENT_AXIS]
     except TypeError:
         axisSpeed = lastSpeed
-    lastSpeed = axisSpeed
-    return axisSpeed
-
-cdef public double meca_get_position():
-    global robotFeedback
-    global lastPosition
-    _, pose, _, _ = robotFeedback.get_data(wait_for_new_messages=False)
     try:
-        axisPosition = pose[MOVEMENT_AXIS]
+        axisPosition = pose[MOVEMENT_AXIS+1]
     except TypeError:
         axisPosition = lastPosition
+    lastSpeed = axisSpeed
     lastPosition = axisPosition
-    return axisPosition
+
+cdef public double meca_get_velocity():
+    global lastSpeed
+    return lastSpeed
+
+cdef public double meca_get_position():
+    global lastPosition
+    return lastPosition
 
 cdef public void meca_move_lin_vel_trf(double vel):
     global robotController
@@ -107,6 +113,10 @@ cdef public void meca_move_lin_vel_trf(double vel):
 cdef public void meca_set_conf(int c1, int c2, int c3):
     global robotController
     robotController.SetConf(c1,c2,c3)
+
+cdef public void meca_end_program():
+    global program_ended
+    program_ended = True
 
 cdef public void meca_move_pose(double x, double y, double z, double alpha, double beta, double gamma):
     global robotController
@@ -124,5 +134,16 @@ cdef public bool meca_block_ended():
 
 cdef public void meca_set_monitoring_interval(double monitoring_interval):
     global robotController
-    robotController.SetRealTimeMonitoring(["2027","2214"])
+    global rt_monitoring_interval
+    robotController.SetRealTimeMonitoring(["2210","2211","2214"])
     robotController.SetMonitoringInterval(monitoring_interval)
+    rt_monitoring_interval = (monitoring_interval*9)/10
+    thd = threading.Thread(target=update_loop)
+    thd.start()
+
+def update_loop():
+    global rt_monitoring_interval
+    global program_ended
+    while not program_ended:
+        meca_update_data()
+        time.sleep(rt_monitoring_interval)
