@@ -48,7 +48,7 @@ double Robot::get_velocity() {
 }
 
 double Robot::get_position() {
-    return meca_get_velocity()*1e-3;
+    return meca_get_position()*1e-3;
 }
 
 // N.B. La velocità è in metri al secondo

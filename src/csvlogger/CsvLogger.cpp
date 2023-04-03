@@ -7,6 +7,7 @@ CsvLogger::CsvLogger(const std::string filename) :FILENAME(filename.c_str()){
         exit(1);
     }
     file.precision(16);
+    file << "Time, Encoder, Ctr_vel, Vel, Pos,\n";
 }
 
 CsvLogger::~CsvLogger() {

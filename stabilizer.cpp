@@ -82,9 +82,9 @@ int main() {
         csvLogger << current_robot_velocity;
         csvLogger << current_robot_position;
 
-        printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f robot_velocity=%-10.3f\n\n" , 
-            current_encoder_angle , timer.get_mean_cycle_time(),
-            timer.get_standard_deviation_cycle_time() , current_robot_velocity);
+        //printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f robot_velocity=%-10.3f\n\n" , 
+        //    current_encoder_angle , timer.get_mean_cycle_time(),
+        //    timer.get_standard_deviation_cycle_time() , current_robot_velocity);
 
         /*
             Fine operazioni

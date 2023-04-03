@@ -1,7 +1,7 @@
 #include "Constants.hpp"
 
 // commentare per non usare localhost come ip del robot
-#define ROBOT_IP_IS_LOCALHOST
+//#define ROBOT_IP_IS_LOCALHOST
 
 const uint32_t Constants::TARGET_CYCLE_TIME_MICROSECONDS = 5000;
 const uint32_t Constants::MONITORING_INTERVAL_MICROSECONDS = 4500;
@@ -20,7 +20,7 @@ const char* Constants::ROBOT_IP = "localhost";
 #endif
 
 #ifndef ROBOT_IP_IS_LOCALHOST
-const char* Constants::ROBOT_IP = "192.168.0.100";
+const char* Constants::ROBOT_IP = "192.168.2.103";
 #endif
 
 const char* Constants::LOGFILE_NAME = "pendulum.csv";

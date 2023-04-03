@@ -1,10 +1,34 @@
 import cython
 from libcpp cimport bool
 import os
+from threading import Thread
+import time
 
 lastSpeed = 0
 lastPosition = 0
 MOVEMENT_AXIS = 0 # cambiare nel caso la velocità interessata non sia la x
+
+def retrieveData():
+    global robotFeedback
+    global lastSpeed
+    global lastPosition
+    #param = os.sched_param(os.sched_get_priority_max(os.SCHED_OTHER))
+    #os.sched_setscheduler(0, os.SCHED_OTHER, param)
+    while True:
+        print("sono nel thread")
+        _, pose, speed, _ = robotFeedback.get_data(wait_for_new_messages=True)
+        try:
+            axisPosition = pose[MOVEMENT_AXIS]-1000
+            axisSpeed = speed[1+MOVEMENT_AXIS]
+        except TypeError:
+            axisSpeed = lastSpeed
+            axisPosition = lastPosition
+        lastPosition = axisPosition
+        lastSpeed = axisSpeed
+        print(lastSpeed)
+        print(lastPosition)
+        #time.sleep(0.004)
+
 
 cdef public void meca_init(bool bypass_robot, const char* robot_ip):
     param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
@@ -33,10 +57,12 @@ cdef public bool meca_connect():
         robotController.connect()
         robotFeedback.connect()
     except Exception:
-       print("python : la connessione al robot non è andata a buon fine")
+       print("python : la connessione al robot non e'  andata a buon fine")
        return False
     else:
-       print("python : la connessione al robot è andata a buon fine")
+       print("python : la connessione al robot e' andata a buon fine")
+       thread = Thread(target=retrieveData)
+       thread.start()
        return True
 
 cdef public void meca_activate():
@@ -72,26 +98,10 @@ cdef public void print_velocity(double n):
     print(f"Sono Python! Ho ricevuto il numero {n}")
 
 cdef public double meca_get_velocity():
-    global robotFeedback
-    global lastSpeed
-    _, _, speed, _ = robotFeedback.get_data(wait_for_new_messages=False)
-    try:
-        axisSpeed = speed[1+MOVEMENT_AXIS]
-    except TypeError:
-        axisSpeed = lastSpeed
-    lastSpeed = axisSpeed
-    return axisSpeed
+    return lastSpeed
 
 cdef public double meca_get_position():
-    global robotFeedback
-    global lastPosition
-    _, pose, _, _ = robotFeedback.get_data(wait_for_new_messages=False)
-    try:
-        axisPosition = pose[MOVEMENT_AXIS]
-    except TypeError:
-        axisPosition = lastPosition
-    lastPosition = axisPosition
-    return axisPosition
+    return lastPosition
 
 cdef public void meca_move_lin_vel_trf(double vel):
     global robotController
@@ -124,4 +134,5 @@ cdef public bool meca_block_ended():
 
 cdef public void meca_set_monitoring_interval(double monitoring_interval):
     global robotController
-    robotController.SetMonitoringInterval(monitoring_interval);
+    robotController.SetRealTimeMonitoring(["2210","2211","2214"])
+    robotController.SetMonitoringInterval(monitoring_interval)
