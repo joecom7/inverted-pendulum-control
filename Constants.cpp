@@ -20,7 +20,7 @@ const char* Constants::ROBOT_IP = "localhost";
 #endif
 
 #ifndef ROBOT_IP_IS_LOCALHOST
-const char* Constants::ROBOT_IP = "192.168.137.1";
+const char* Constants::ROBOT_IP = "192.168.0.100";
 #endif
 
 const char* Constants::LOGFILE_NAME = "pendulum.csv";
