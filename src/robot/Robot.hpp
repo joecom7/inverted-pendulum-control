@@ -11,6 +11,7 @@ class Robot {
         bool block_ended();
     public:
         Robot(const char* robot_ip , double pos_limit,bool bypass_robot);
+        ~Robot();
         void connect();
         void activate();
         void home();

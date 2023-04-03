@@ -20,6 +20,8 @@ class re_decoder
 
    public:
 
+   ~re_decoder();
+
    re_decoder(int gpioA, int gpioB, re_decoderCB_t callback);
    /*
       This function establishes a rotary encoder on gpioA and gpioB.

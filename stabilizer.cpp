@@ -11,12 +11,10 @@
 Robot robot(Constants::ROBOT_IP , Constants::ROBOT_POS_LIMIT, Constants::BYPASS_ROBOT);
 CsvLogger csvLogger(Constants::LOGFILE_NAME);
 
+bool program_terminated = false;
+
 void cleanup(int signum) {
-    robot.deactivate();
-    robot.disconnect();
-    csvLogger.close();
-    printf("ho ricevuto il segnale %d. termino...\n" , signum);
-    exit(0);
+    program_terminated = true;
 }
 
 
@@ -45,7 +43,7 @@ int main() {
 
     FeedbackController feedbackController;
 
-    // Comandi per il setup del robot
+    // robot setup
     robot.connect();
     robot.activate();
     robot.home();
@@ -61,11 +59,11 @@ int main() {
 
     timer.set_starting_timestamp();
     
-    while(true) {
+    while(!program_terminated) {
         timer.start_cycle();
 
         /*
-            Qui andranno le operazioni da eseguire in ciclo
+            tasks to execute in loop
         */
 
         timestamp_microseconds = timer.get_microseconds_from_program_start();
@@ -87,10 +85,12 @@ int main() {
         //    timer.get_standard_deviation_cycle_time() , current_robot_velocity);
 
         /*
-            Fine operazioni
+            end of tasks
         */
 
         csvLogger.end_row();
         timer.end_cycle();
     }
+
+    printf("received termination signal. terminating...\n");
 }

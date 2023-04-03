@@ -13,7 +13,7 @@ void Robot::connect() {
     bool connected = meca_connect();
     while(!connected) {
         sleep(1);
-        printf("robot non disponibile. ritento la connessione\n");
+        printf("robot not available. retrying connection\n");
         connected = meca_connect();
     }
 }
@@ -67,9 +67,16 @@ void Robot::set_conf(short c1, short c2, short c3) {
 void Robot::move_pose(double x, double y, double z, double alpha, double beta, double gamma) {
     meca_move_pose(x,y,z,alpha,beta,gamma);
     while(!block_ended()) {
-        printf("attendo che il robot finisca di muoversi\n");
+        printf("waiting for robot to finish moving\n");
         sleep(1);
     }
+}
+
+Robot::~Robot() {
+    printf("deactivating robot\n");
+    deactivate();
+    printf("disconnecting robot\n");
+    disconnect();
 }
 
 bool Robot::block_ended() {

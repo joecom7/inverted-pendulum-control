@@ -1,6 +1,7 @@
 #include "Encoder.hpp"
 
 #include <math.h>
+#include <cstdio>
 
 int Encoder::PPR = 0;
 int Encoder::pos = 0;
@@ -33,4 +34,9 @@ double Encoder::get_angle() {
 
 double Encoder::get_angle_degrees() {
     return pos*RESOLUTION_DEGREES;
+}
+
+Encoder::~Encoder() {
+    printf("cancelling encoder callback\n");
+    decoder.re_cancel();
 }

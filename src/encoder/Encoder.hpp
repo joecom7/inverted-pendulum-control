@@ -19,6 +19,7 @@ class Encoder {
         Encoder(int clk_gpio, int dt_gpio, int ppr, int start_angle_degrees);
         double get_angle();
         double get_angle_degrees();
+        ~Encoder();
 };
 
 #endif

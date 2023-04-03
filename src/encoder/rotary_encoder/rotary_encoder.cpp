@@ -99,3 +99,7 @@ void re_decoder::re_cancel(void)
    gpioSetAlertFuncEx(mygpioB, 0, this);
 }
 
+re_decoder::~re_decoder() {
+   printf("terminating pigpio\n");
+   gpioTerminate();
+}
