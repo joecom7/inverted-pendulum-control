@@ -51,6 +51,10 @@ double Robot::get_position() {
     return meca_get_position()*1e-3;
 }
 
+double Robot::get_target_velocity() {
+    return meca_get_target_velocity()*1e-3;
+}
+
 // N.B. La velocità è in metri al secondo
 void Robot::move_lin_vel_trf(double velocity) {
     bool out_of_range_right = ((get_position()>POS_LIMIT) && (velocity > 0));

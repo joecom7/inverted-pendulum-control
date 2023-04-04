@@ -23,6 +23,7 @@ class Robot {
         void print_number(double number);
         double get_velocity();
         double get_position();
+        double get_target_velocity();
         void move_lin_vel_trf(double velocity);
         void set_conf(short c1, short c2, short c3);
         void move_pose(double x, double y, double z, double alpha, double beta, double gamma);

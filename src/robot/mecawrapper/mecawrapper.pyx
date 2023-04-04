@@ -8,7 +8,7 @@ lastSpeed = 0
 lastPosition = 0
 lastPositionTimestamp = 0
 lastSpeedTimestamp = 0
-lastTimestamp = 0
+lastTargetSpeed = 0
 MOVEMENT_AXIS = 0 # cambiare nel caso la velocità interessata non sia la x
 program_ended = False
 rt_monitoring_interval = 5e-3
@@ -89,31 +89,31 @@ cdef public void meca_update_data():
     global lastPosition
     global lastSpeedTimestamp
     global lastPositionTimestamp
-    global lastTimestamp
+    global lastTargetSpeed
     _, pose, speed, targetspeed, _ = robotFeedback.get_data(wait_for_new_messages=True)
     try:
-        axisSpeed = speed[1+MOVEMENT_AXIS]
+        axisSpeed = speed[1 + MOVEMENT_AXIS]
         speedTimestamp = speed[0]
     except TypeError:
         axisSpeed = lastSpeed
         speedTimestamp = lastSpeedTimestamp
     try:
-        axisPosition = pose[MOVEMENT_AXIS+1]
+        axisPosition = pose[1 + MOVEMENT_AXIS]
         positionTimestamp = pose[0]
     except TypeError:
         axisPosition = lastPosition
         positionTimestamp = lastPositionTimestamp
     try:
-        timestamp = targetspeed[0]
+        axisTargetSpeed = targetspeed[1 + MOVEMENT_AXIS]
         # Eventually more code
     except TypeError:
-        timestamp = lastTimestamp
+        axisTargetSpeed = lastTargetSpeed
         # Eventually more code
     lastSpeed = axisSpeed
     lastPosition = axisPosition
     lastPositionTimestamp = positionTimestamp
     lastSpeedTimestamp = speedTimestamp
-    lastTimestamp = timestamp
+    lastTargetSpeed = axisTargetSpeed
 
 cdef public double meca_get_velocity():
     global lastSpeed
@@ -122,6 +122,10 @@ cdef public double meca_get_velocity():
 cdef public double meca_get_position():
     global lastPosition
     return lastPosition
+
+cdef public double meca_get_target_velocity():
+    global lastTargetSpeed
+    return lastTargetSpeed
 
 cdef public void meca_move_lin_vel_trf(double vel):
     global robotController
@@ -174,10 +178,6 @@ cdef public double meca_get_speed_timestamp():
 cdef public double meca_get_position_timestamp():
     global lastPositionTimestamp
     return lastPositionTimestamp
-
-cdef public double meca_get_targetspeed_timestamp():
-    global lastTimestamp
-    return lastTimestamp
 
 def update_loop():
     param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO) - 1)
