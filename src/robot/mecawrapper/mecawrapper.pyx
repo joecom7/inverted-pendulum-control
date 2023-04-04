@@ -8,6 +8,7 @@ lastSpeed = 0
 lastPosition = 0
 lastPositionTimestamp = 0
 lastSpeedTimestamp = 0
+lastTimestamp = 0
 MOVEMENT_AXIS = 0 # cambiare nel caso la velocità interessata non sia la x
 program_ended = False
 rt_monitoring_interval = 5e-3
@@ -88,7 +89,8 @@ cdef public void meca_update_data():
     global lastPosition
     global lastSpeedTimestamp
     global lastPositionTimestamp
-    _, pose, speed, _ = robotFeedback.get_data(wait_for_new_messages=True)
+    global lastTimestamp
+    _, pose, speed, targetspeed, _ = robotFeedback.get_data(wait_for_new_messages=True)
     try:
         axisSpeed = speed[1+MOVEMENT_AXIS]
         speedTimestamp = speed[0]
@@ -101,10 +103,17 @@ cdef public void meca_update_data():
     except TypeError:
         axisPosition = lastPosition
         positionTimestamp = lastPositionTimestamp
+    try:
+        timestamp = targetspeed[0]
+        # Eventually more code
+    except TypeError:
+        timestamp = lastTimestamp
+        # Eventually more code
     lastSpeed = axisSpeed
     lastPosition = axisPosition
     lastPositionTimestamp = positionTimestamp
     lastSpeedTimestamp = speedTimestamp
+    lastTimestamp = timestamp
 
 cdef public double meca_get_velocity():
     global lastSpeed
@@ -165,6 +174,10 @@ cdef public double meca_get_speed_timestamp():
 cdef public double meca_get_position_timestamp():
     global lastPositionTimestamp
     return lastPositionTimestamp
+
+cdef public double meca_get_targetspeed_timestamp():
+    global lastTimestamp
+    return lastTimestamp
 
 def update_loop():
     param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO) - 1)
