@@ -19,8 +19,12 @@ namespace Constants {
     extern const uint32_t MONITORING_INTERVAL_MICROSECONDS;
     extern const bool BYPASS_ROBOT;
     extern const bool TIMER_AGGRESSIVE_MODE;
+    extern const bool ACTIVATE_ROBOT_FEEDBACK;
     extern const char* ROBOT_IP;
     extern const char* LOGFILE_NAME;
+    extern const double SQUARE_WAVE_AMPLITUDE_PKPK_MPS;
+    extern const double SQUARE_WAVE_FREQUENCY_HZ;
+    extern const double SQUARE_WAVE_MEAN_MPS;
 }
 
 #endif

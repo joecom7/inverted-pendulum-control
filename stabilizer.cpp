@@ -13,7 +13,7 @@ CsvLogger csvLogger(Constants::LOGFILE_NAME);
 
 bool program_terminated = false;
 
-void cleanup(int signum) {
+void cleanup(int) {
     program_terminated = true;
 }
 
@@ -42,9 +42,12 @@ int main() {
     signal(6,cleanup);
 
     FeedbackController feedbackController;
+    feedbackController.set_square_wave_param(Constants::SQUARE_WAVE_FREQUENCY_HZ,
+                                            Constants::SQUARE_WAVE_AMPLITUDE_PKPK_MPS,
+                                            Constants::SQUARE_WAVE_MEAN_MPS);
 
     // robot setup
-    robot.connect();
+    robot.connect(Constants::ACTIVATE_ROBOT_FEEDBACK);
     robot.activate();
     robot.home();
     robot.set_conf(ROBOT_CONF);

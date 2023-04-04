@@ -28,6 +28,7 @@ class Timer {
         void start_cycle();
         void end_cycle();
         double get_mean_cycle_time();
+        double get_program_start_seconds();
         double get_standard_deviation_cycle_time();
         uint32_t get_max_cycle_time();
         uint32_t get_min_cycle_time();

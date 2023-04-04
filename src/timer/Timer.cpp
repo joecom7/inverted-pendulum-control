@@ -23,6 +23,7 @@ uint64_t Timer::microseconds() {
 }
 
 void Timer::set_starting_timestamp() {
+    usleep(1000000);
     PROGRAM_START_MICROSECONDS = microseconds();
 }
 
@@ -51,6 +52,10 @@ uint32_t Timer::time_to_sleep() {
         estimated_delay = TARGET_CYCLE_TIME_MICROSECONDS;
     uint32_t calculated_time = TARGET_CYCLE_TIME_MICROSECONDS - estimated_delay;
     return calculated_time;
+}
+
+double Timer::get_program_start_seconds() {
+    return PROGRAM_START_MICROSECONDS*1e-6;
 }
 
 void Timer::end_cycle() {

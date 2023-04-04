@@ -9,12 +9,12 @@ Robot::Robot(const char* robot_ip , double pos_limit,bool bypass_robot) :
     meca_init(bypass_robot, robot_ip);
 }
 
-void Robot::connect() {
-    bool connected = meca_connect();
+void Robot::connect(bool activate_feedback) {
+    bool connected = meca_connect(activate_feedback);
     while(!connected) {
         sleep(1);
         printf("robot not available. retrying connection\n");
-        connected = meca_connect();
+        connected = meca_connect(activate_feedback);
     }
 }
 
@@ -87,4 +87,12 @@ bool Robot::block_ended() {
 
 void Robot::set_monitoring_interval(uint32_t monitoring_interval_microseconds) {
     meca_set_monitoring_interval(((double)monitoring_interval_microseconds)*1e-6);
+}
+
+double Robot::get_position_timestamp() {
+    return meca_get_position_timestamp();
+}
+
+double Robot::get_speed_timestamp() {
+    return meca_get_speed_timestamp();
 }

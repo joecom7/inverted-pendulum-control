@@ -14,7 +14,7 @@ class Robot {
     public:
         Robot(const char* robot_ip , double pos_limit,bool bypass_robot);
         ~Robot();
-        void connect();
+        void connect(bool activate_feedback);
         void activate();
         void home();
         void deactivate();
@@ -27,6 +27,8 @@ class Robot {
         void set_conf(short c1, short c2, short c3);
         void move_pose(double x, double y, double z, double alpha, double beta, double gamma);
         void set_monitoring_interval(uint32_t monitoring_interval_microseconds);
+        double get_position_timestamp();
+        double get_speed_timestamp();
 };
 
 #endif
