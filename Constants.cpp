@@ -14,8 +14,8 @@ const float Constants::AGGRESSIVE_DELAY_FEEDBACK_GAIN =20;
 const bool Constants::BYPASS_ROBOT = false;
 const bool Constants::ACTIVATE_ROBOT_FEEDBACK = true;
 const bool Constants::TIMER_AGGRESSIVE_MODE = false;
-const double Constants::ROBOT_POS_LIMIT = 0.5;
-const double Constants::SQUARE_WAVE_AMPLITUDE_PKPK_MPS = 0.2;
+const double Constants::ROBOT_POS_LIMIT = 0.15;
+const double Constants::SQUARE_WAVE_AMPLITUDE_PKPK_MPS = 0.3;
 const double Constants::SQUARE_WAVE_FREQUENCY_HZ = 0.5;
 const double Constants::SQUARE_WAVE_MEAN_MPS = 0;
 

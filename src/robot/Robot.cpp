@@ -55,8 +55,11 @@ double Robot::get_position() {
 void Robot::move_lin_vel_trf(double velocity) {
     bool out_of_range_right = ((get_position()>POS_LIMIT) && (velocity > 0));
     bool out_of_range_left = ((get_position()<(-POS_LIMIT)) && (velocity < 0));
-    if((!out_of_range_right)&&(!out_of_range_left)) {
+    if(!out_of_range_right&&!out_of_range_left) {
         meca_move_lin_vel_trf(velocity*1e+3);
+    }
+    else {
+        meca_move_lin_vel_trf(0.0);
     }
 }
 
