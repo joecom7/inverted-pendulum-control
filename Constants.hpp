@@ -4,7 +4,7 @@
 #include <cstdint>
 
 #define ROBOT_CONF 1,1,-1
-#define STARTING_ROBOT_POSITION 0,-240,170
+#define STARTING_ROBOT_POSITION 0,-240,190
 #define STARTING_ROBOT_ORIENTATION 90,0,0
 
 namespace Constants {

@@ -62,6 +62,9 @@ void Robot::move_lin_vel_trf(double velocity) {
     if((!out_of_range_right)&&(!out_of_range_left)) {
         meca_move_lin_vel_trf(velocity*1e+3);
     }
+    else {
+        meca_move_lin_vel_trf(0.0);
+    }
 }
 
 void Robot::set_conf(short c1, short c2, short c3) {
@@ -94,9 +97,13 @@ void Robot::set_monitoring_interval(uint32_t monitoring_interval_microseconds) {
 }
 
 double Robot::get_position_timestamp() {
-    return meca_get_position_timestamp();
+    return meca_get_position_timestamp()*1e-6;
 }
 
 double Robot::get_speed_timestamp() {
-    return meca_get_speed_timestamp();
+    return meca_get_speed_timestamp()*1e-6;
+}
+
+double Robot::get_target_speed_timestamp() {
+    return meca_get_speed_timestamp()*1e-6;
 }

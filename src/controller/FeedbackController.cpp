@@ -2,6 +2,14 @@
 
 double FeedbackController::get_robot_input(uint64_t timestamp_microseconds, double encoder_angle) {
     return square_wave(timestamp_microseconds);
+    //if(encoder_angle<-1||encoder_angle>1)
+    //    return 0;
+    //else if(encoder_angle>-0.08&&encoder_angle<0.08) {
+    //    return 0;
+    //}
+    //else {
+    //    return -0.5*encoder_angle;
+    //}
 }
 
 double FeedbackController::square_wave(uint64_t timestamp_microseconds) {

@@ -23,7 +23,7 @@ uint64_t Timer::microseconds() {
 }
 
 void Timer::set_starting_timestamp() {
-    usleep(1000000);
+    usleep(5000000);
     PROGRAM_START_MICROSECONDS = microseconds();
 }
 

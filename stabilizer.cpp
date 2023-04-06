@@ -35,7 +35,7 @@ int main() {
         Constants::TIMER_AGGRESSIVE_MODE);
 
     double current_encoder_angle, current_robot_velocity , new_robot_input_velocity;
-    double current_robot_position;
+    double current_robot_position,current_robot_ctrl_speed,robot_ctrl_speed_timestamp,speed_timestamp,pos_timestamp;
     uint64_t timestamp_microseconds;
 
     signal(2,cleanup);
@@ -65,17 +65,40 @@ int main() {
 
         timestamp_microseconds = timer.get_microseconds_from_program_start();
         current_encoder_angle = encoder.get_angle();
-        current_robot_velocity = robot.get_velocity();
-        current_robot_position = robot.get_position();
         new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds,current_encoder_angle);
 
         robot.move_lin_vel_trf(new_robot_input_velocity);
 
-        csvLogger << (double)timestamp_microseconds*1e-6;
-        csvLogger << current_encoder_angle;
-        csvLogger << new_robot_input_velocity;
-        csvLogger << current_robot_velocity;
-        csvLogger << current_robot_position;
+        current_robot_ctrl_speed = robot.get_target_velocity();
+        robot_ctrl_speed_timestamp = robot.get_target_speed_timestamp();
+        current_robot_velocity = robot.get_velocity();
+        speed_timestamp = robot.get_speed_timestamp();
+        current_robot_position = robot.get_position();
+        pos_timestamp = robot.get_position_timestamp();
+
+        if(robot_ctrl_speed_timestamp>1e-5) { //this is needed because first feedbacks will have a timestamp of 0
+            static double robot_zero_timestamp = robot_ctrl_speed_timestamp;
+            csvLogger << (double)timestamp_microseconds*1e-6;
+            csvLogger << current_encoder_angle;
+            csvLogger << new_robot_input_velocity;
+            csvLogger << robot_ctrl_speed_timestamp - robot_zero_timestamp;
+            csvLogger << current_robot_ctrl_speed;
+            csvLogger << speed_timestamp - robot_zero_timestamp;
+            csvLogger << current_robot_velocity;
+            csvLogger << pos_timestamp - robot_zero_timestamp;
+            csvLogger << current_robot_position;
+        }
+        else {
+            csvLogger << (double)timestamp_microseconds*1e-6;
+            csvLogger << current_encoder_angle;
+            csvLogger << new_robot_input_velocity;
+            csvLogger << robot_ctrl_speed_timestamp;
+            csvLogger << current_robot_ctrl_speed;
+            csvLogger << speed_timestamp;
+            csvLogger << current_robot_velocity;
+            csvLogger << pos_timestamp;
+            csvLogger << current_robot_position;
+        }
 
         //printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f robot_velocity=%-10.3f\n\n" , 
         //    current_encoder_angle , timer.get_mean_cycle_time(),

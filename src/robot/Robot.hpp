@@ -30,6 +30,7 @@ class Robot {
         void set_monitoring_interval(uint32_t monitoring_interval_microseconds);
         double get_position_timestamp();
         double get_speed_timestamp();
+        double get_target_speed_timestamp();
 };
 
 #endif
