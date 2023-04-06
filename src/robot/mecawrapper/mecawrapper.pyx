@@ -9,6 +9,7 @@ lastPosition = 0
 lastPositionTimestamp = 0
 lastSpeedTimestamp = 0
 lastTargetSpeed = 0
+lastTargetSpeedTimestamp = 0
 MOVEMENT_AXIS = 0 # cambiare nel caso la velocità interessata non sia la x
 program_ended = False
 rt_monitoring_interval = 5e-3
@@ -90,6 +91,7 @@ cdef public void meca_update_data():
     global lastSpeedTimestamp
     global lastPositionTimestamp
     global lastTargetSpeed
+    global lastTargetSpeedTimestamp
     _, pose, speed, targetspeed, _ = robotFeedback.get_data(wait_for_new_messages=True)
     try:
         axisSpeed = speed[1 + MOVEMENT_AXIS]
@@ -105,15 +107,18 @@ cdef public void meca_update_data():
         positionTimestamp = lastPositionTimestamp
     try:
         axisTargetSpeed = targetspeed[1 + MOVEMENT_AXIS]
+        targetSpeedTimestamp = targetspeed[0]
         # Eventually more code
     except TypeError:
         axisTargetSpeed = lastTargetSpeed
+        targetSpeedTimestamp = lastTargetSpeedTimestamp
         # Eventually more code
     lastSpeed = axisSpeed
     lastPosition = axisPosition
     lastPositionTimestamp = positionTimestamp
     lastSpeedTimestamp = speedTimestamp
     lastTargetSpeed = axisTargetSpeed
+    lastTargetSpeedTimestamp = targetSpeedTimestamp
 
 cdef public double meca_get_velocity():
     global lastSpeed
@@ -164,7 +169,7 @@ cdef public void meca_set_monitoring_interval(double monitoring_interval):
     global robotController
     global rt_monitoring_interval
     global ACTIVATE_FEEDBACK
-    robotController.SetRealTimeMonitoring(["2210","2214","2201"])
+    robotController.SetRealTimeMonitoring(["2210","2214","2201","2204"])
     robotController.SetMonitoringInterval(monitoring_interval)
     rt_monitoring_interval = monitoring_interval
     if ACTIVATE_FEEDBACK:
@@ -178,6 +183,10 @@ cdef public double meca_get_speed_timestamp():
 cdef public double meca_get_position_timestamp():
     global lastPositionTimestamp
     return lastPositionTimestamp
+
+cdef public double meca_get_target_speed_timestamp():
+    global lastTargetSpeedTimestamp
+    return lastTargetSpeedTimestamp
 
 def update_loop():
     param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO) - 1)
