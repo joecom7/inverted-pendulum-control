@@ -4,14 +4,19 @@ import time
 import os
 import random
 import math
-from threading import Thread
+import threading
+
  
-def encode_ascii(str):
-    return bytes(str,'ascii') + b'\x00'
+HOST = "0.0.0.0"  # Static IP of the robot
+PORTCONTROL = 10000  # Port on which the robot listen and send response to user
+PORTMONITORING = 10001 # Optional feedback messages port
+TIMEOUT = 20 # Timeout for connection waiting, seconds
 
 eobCounter = 0
-
 start_of_program = time.time()
+
+def encode_ascii(str):
+    return bytes(str,'ascii') + b'\x00'
  
  
 def handleConnect(conn):
@@ -113,54 +118,42 @@ def handleData(data, conn):
     else:
         return
 
-def feedbackLoop():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s2: 
-        s2.bind((HOST, PORTMONITORING))
-        s2.listen()
-        conn2, addr2 = s2.accept()
-        with conn2:
-            print(f"Connected by {addr2} | monitoring side\n\n")
-            while True:
-                messageVel = buildMessageVel(random.randint(0, 100))
-                messagePose = buildMessagePose(random.randint(0, 100))
-                #print(message)
-                conn2.sendall(messageVel)
-                conn2.sendall(messagePose)
-                time.sleep(0.004)
- 
- 
- 
-HOST = "0.0.0.0"  # Static IP of the robot
-PORTCONTROL = 10000  # Port on which the robot listen and send response to user
-PORTMONITORING = 10001 # Optional feedback messages port
-
-sommaTempi = 0
-iterazioni = 0
- 
-TIMEOUT = 20 # Timeout for connection waiting, seconds
-
-thread = Thread(target=feedbackLoop)
-thread.start()
-
-param = os.sched_param(os.sched_get_priority_max(os.SCHED_FIFO))
-os.sched_setscheduler(0, os.SCHED_FIFO, param)
-
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s: 
-    s.bind((HOST, PORTCONTROL))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print(f"Connected by {addr} | Control side\n\n") # Confirm of connection
-        handleConnect(conn)
-        lastMessage = time.time()
+def feedbackLoop(conn,addr):
+        print(f"Connected by {addr} | monitoring side\n\n")
         while True:
-            data = conn.recv(1024).decode("ascii") 
-            if len(data) != 0:
-                tempoPassato = time.time() - lastMessage
-                lastMessage = tempoPassato + lastMessage
-                sommaTempi += tempoPassato
-                iterazioni += 1
-                media = sommaTempi/(iterazioni)
-                #print(f"media = {media*1000000}")
-                handleData(data, conn)
+            messageVel = buildMessageVel(random.randint(0, 100))
+            messagePose = buildMessagePose(random.randint(0, 100))
+            #print(message)
+            conn.sendall(messageVel)
+            conn.sendall(messagePose)
+            time.sleep(0.004)
+                
+def controlLoop(conn,addr):
+    print(f"Connected by {addr} | Control side\n\n") # Confirm of connection
+    handleConnect(conn)
+    lastMessage = time.time()
+    while True:
+        data = conn.recv(1024).decode("ascii") 
+        if len(data) != 0:
+            handleData(data, conn)
+            
+def controlAccepter():
+    s = socket.socket()
+    s.bind((HOST, PORTCONTROL))
+    s.listen(10)                 
+    while True:
+        c, addr = s.accept()
+        threading.Thread(target = controlLoop, args = (c,addr)).start()
+        
+    
+def feedbackAccepter():
+    s = socket.socket()
+    s.bind((HOST, PORTMONITORING))
+    s.listen(10)                 
+    while True:
+        c, addr = s.accept()
+        threading.Thread(target = feedbackLoop, args = (c,addr)).start()
+
+threading.Thread(target=controlAccepter).start()
+threading.Thread(target=feedbackAccepter).start()
             
