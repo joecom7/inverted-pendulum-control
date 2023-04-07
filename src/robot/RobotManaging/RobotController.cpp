@@ -17,7 +17,7 @@ RobotController::RobotController(char* IP_address, int port)
     handler = new CodeHandler(Robotsocket);
 
     address.sin_family = AF_INET;
-    address.sin_port = port;
+    address.sin_port = htons(port);
 
     if(inet_pton(address.sin_family, IP_address, &address.sin_addr) < 0)
     {
@@ -46,9 +46,9 @@ void RobotController::Connect()
             perror("Connection failed");
         }
 
-        handler->ReceiveResponse(NULL);
+        connected_status = handler->ReceiveResponse(0);
 
-        connected_status = true;
+        
     }
     else
     {

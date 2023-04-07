@@ -1,6 +1,7 @@
 #include "CodeHandler.hpp"
 
-const char* CodeHandler::codes[] = {"3000", "3001"};
+const char* CodeHandler::response_codes[] = {"3000"};
+const char* CodeHandler::error_codes[] = {"3001"};
 
 CodeHandler::CodeHandler(int socket)
 {
@@ -16,7 +17,7 @@ CodeHandler::CodeHandler(int socket)
 
 }
 
-void CodeHandler::ReceiveResponse(int timeout = 0)
+bool CodeHandler::ReceiveResponse(int timeout = 0)
 {
     if(!timeout)
     {
