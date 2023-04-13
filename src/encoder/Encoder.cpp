@@ -36,6 +36,23 @@ double Encoder::get_angle_degrees() {
     return pos*RESOLUTION_DEGREES;
 }
 
+void Encoder::calibrate(uint64_t timestamp) {
+    if(old_pos==pos) {
+        if((timestamp - old_timestamp )> 300e+3) {
+            if(pos>-PPR/4&&pos<PPR/4) {
+                pos = 0;
+            }
+            else {
+                pos = MAX_POS;
+            }
+        }
+    }
+    else {
+        old_pos = pos;
+        old_timestamp = timestamp;
+    }
+}
+
 Encoder::~Encoder() {
     printf("cancelling encoder callback\n");
     decoder.re_cancel();

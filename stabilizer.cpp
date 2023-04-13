@@ -65,6 +65,7 @@ int main() {
 
         timestamp_microseconds = timer.get_microseconds_from_program_start();
         current_encoder_angle = encoder.get_angle();
+        encoder.calibrate(timestamp_microseconds);
         new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds,current_encoder_angle);
 
         robot.move_lin_vel_trf(new_robot_input_velocity);

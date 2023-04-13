@@ -13,26 +13,33 @@ class re_decoder
    re_decoderCB_t mycallback;
 
    void _pulse(int gpio, int level, uint32_t tick __attribute__((unused)));
-
-   /* Need a static callback to link with C. */
    static void _pulseEx(int gpio, int level, uint32_t tick, void *user);
 
 
    public:
 
+   /**
+    * @brief Destroy the re decoder object. This ensures that Pigpio is uninitialized.
+    * 
+    */
    ~re_decoder();
 
-   re_decoder(int gpioA, int gpioB, re_decoderCB_t callback);
-   /*
-      This function establishes a rotary encoder on gpioA and gpioB.
+   /**
+    * @brief This function establishes a rotary encoder on gpioA and gpioB.
 
       When the encoder is turned the callback function is called.
-   */
+    * 
+    * @param gpioA GPIO to which the CLK pin of the encoder is connected.
+    * @param gpioB GPIO to which the DT pin of the encoder is connected.
+    * @param callback A function to be called when the encoder is turned.
+    */
+   re_decoder(int gpioA, int gpioB, re_decoderCB_t callback);
 
-   void re_cancel(void);
-   /*
-      This function releases the resources used by the decoder.
+  /**
+   * @brief Release the resources used by the decoder.
+   * 
    */
+   void re_cancel(void);
 };
 
 #endif
