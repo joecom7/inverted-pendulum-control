@@ -2,7 +2,7 @@ OBJS	= src/encoder/rotary_encoder/rotary_encoder.o src/encoder/Encoder.o src/tim
 SOURCE	= src/encoder/rotary_encoder/rotary_encoder.cpp src/encoder/Encoder.cpp src/timer/timerStats/TimerStats.cpp src/timer/Timer.cpp stabilizer.cpp src/robot/mecawrapper/mecawrapper.c src/robot/Robot.cpp Constants.cpp src/csvlogger/CsvLogger.cpp src/controller/FeedbackController.cpp
 
 OUT	= stabilizer
-CC	 = g++
+CC	 = chrt -r 99 g++
 FLAGS	 = -c -W -Wall -Wextra
 LFLAGS	 = -lpigpio -lrt `python3-config --cflags --ldflags --embed`
 

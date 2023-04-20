@@ -126,7 +126,7 @@ def feedbackLoop(conn,addr):
             #print(message)
             conn.sendall(messageVel)
             conn.sendall(messagePose)
-            time.sleep(0.004)
+            time.sleep(0.001)
                 
 def controlLoop(conn,addr):
     print(f"Connected by {addr} | Control side\n\n") # Confirm of connection

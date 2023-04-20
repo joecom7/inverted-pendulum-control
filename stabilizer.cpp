@@ -7,6 +7,7 @@
 #include "src/csvlogger/CsvLogger.hpp"
 #include "src/controller/FeedbackController.hpp"
 #include "signal.h"
+#include <sys/mman.h>
 
 Robot robot(Constants::ROBOT_IP , Constants::ROBOT_POS_LIMIT, Constants::BYPASS_ROBOT);
 CsvLogger csvLogger(Constants::LOGFILE_NAME);
@@ -55,6 +56,8 @@ int main() {
     robot.set_monitoring_interval(Constants::MONITORING_INTERVAL_MICROSECONDS);
 
     timer.set_starting_timestamp();
+
+    mlockall(MCL_CURRENT | MCL_FUTURE);
     
     while(!program_terminated) {
         timer.start_cycle();
@@ -68,14 +71,16 @@ int main() {
         encoder.calibrate(timestamp_microseconds);
         new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds,current_encoder_angle);
 
-        robot.move_lin_vel_trf(new_robot_input_velocity);
+        if(!Constants::BYPASS_ROBOT) {
+            robot.move_lin_vel_trf(new_robot_input_velocity);
 
-        current_robot_ctrl_speed = robot.get_target_velocity();
-        robot_ctrl_speed_timestamp = robot.get_target_speed_timestamp();
-        current_robot_velocity = robot.get_velocity();
-        speed_timestamp = robot.get_speed_timestamp();
-        current_robot_position = robot.get_position();
-        pos_timestamp = robot.get_position_timestamp();
+            current_robot_ctrl_speed = robot.get_target_velocity();
+            robot_ctrl_speed_timestamp = robot.get_target_speed_timestamp();
+            current_robot_velocity = robot.get_velocity();
+            speed_timestamp = robot.get_speed_timestamp();
+            current_robot_position = robot.get_position();
+            pos_timestamp = robot.get_position_timestamp();
+        }
 
         if(robot_ctrl_speed_timestamp>1e-5) { //this is needed because first feedbacks will have a timestamp of 0
             static double robot_zero_timestamp = robot_ctrl_speed_timestamp;
@@ -101,9 +106,9 @@ int main() {
             csvLogger << current_robot_position;
         }
 
-        //printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f robot_velocity=%-10.3f\n\n" , 
+        //printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10.3f robot_velocity=%-10.3f\n\n" , 
         //    current_encoder_angle , timer.get_mean_cycle_time(),
-        //    timer.get_standard_deviation_cycle_time() , current_robot_velocity);
+        //    timer.get_standard_deviation_cycle_time() , (float)timer.get_max_cycle_time() ,current_robot_velocity);
 
         /*
             end of tasks
