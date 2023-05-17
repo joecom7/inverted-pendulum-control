@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 2.8.12)
+project (inverted-pendulum-control)
+
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)  
+
+set(EXECUTABLE_NAME stabilizer)
+
+file(GLOB ${PROJECT_NAME}_SOURCES *.cpp src/*/*.cpp src/*/*/*.cpp)
+
+add_subdirectory(meca500_ethercat_cpp)
+
+add_executable(${EXECUTABLE_NAME} ${${PROJECT_NAME}_SOURCES})
+
+target_include_directories(${EXECUTABLE_NAME} PUBLIC include)
+
+target_link_libraries(${EXECUTABLE_NAME} meca500_driver)
+target_link_libraries(${EXECUTABLE_NAME} pigpio)

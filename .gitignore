@@ -13,3 +13,8 @@ src/robot/mecawrapper/mecawrapper.c
 src/robot/mecawrapper/mecawrapper.h
 pendulum.csv
 log
+*CMakeFiles*
+*/CMakeFiles
+*.cmake
+*CMakeCache.txt
+*(Makefile
