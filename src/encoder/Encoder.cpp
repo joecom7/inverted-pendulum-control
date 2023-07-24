@@ -20,16 +20,23 @@ Encoder::Encoder(int clk_gpio, int dt_gpio, int ppr, int start_angle_degrees) :
 
 void Encoder::callback(int way) {
     Encoder::pos += way;
-    if(Encoder::pos > Encoder::MAX_POS) {
-        Encoder::pos -= Encoder::PPR;
-    }
-    else if(Encoder::pos <= Encoder::MIN_POS) {
-        Encoder::pos += Encoder::PPR;
-    }
+    // if(Encoder::pos > Encoder::MAX_POS) {
+    //     Encoder::pos -= Encoder::PPR;
+    // }
+    // else if(Encoder::pos <= Encoder::MIN_POS) {
+    //     Encoder::pos += Encoder::PPR;
+    // }
 }
 
 double Encoder::get_angle() {
     return pos*RESOLUTION_RADIANS;
+}
+
+double Encoder::get_omega() {
+    omega = 0.8187*omega_prev - 100*u_prev + 100*get_angle();
+    omega_prev = omega;
+    u_prev = get_angle();
+    return omega;
 }
 
 double Encoder::get_angle_degrees() {

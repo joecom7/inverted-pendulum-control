@@ -9,7 +9,14 @@
 #include "signal.h"
 #include <sys/mman.h>
 
-Robot robot(0.0, Constants::TARGET_CYCLE_TIME_MICROSECONDS);
+#define JOINT_TO_MOVE 0
+
+Robot robot(0.0,
+            Constants::TARGET_CYCLE_TIME_MICROSECONDS,
+            Constants::NETWORK_INTERFACE,
+            Constants::ROBOT_BLENDING_PERCENTAGE,
+            Constants::ROBOT_ACCELERATION_LIMIT);
+
 CsvLogger csvLogger(Constants::LOGFILE_NAME);
 
 bool program_terminated = false;
@@ -45,18 +52,17 @@ int main()
     signal(2, cleanup);
     signal(6, cleanup);
 
-    FeedbackController feedbackController;
+    FeedbackController feedbackController(Constants::CONTROL_TYPE);
     feedbackController.set_square_wave_param(Constants::SQUARE_WAVE_FREQUENCY_HZ,
                                              Constants::SQUARE_WAVE_AMPLITUDE_PKPK_MPS,
                                              Constants::SQUARE_WAVE_MEAN_MPS);
-
+    feedbackController.set_chirp_param(Constants::CHIRP_F0_HZ,
+                                       Constants::CHIRP_K,
+                                       Constants::CHIRP_APKPK_MPS);
     // robot setup
-    robot.activate();
-    robot.home();
-    // robot.set_conf(ROBOT_CONF);
-    // robot.move_pose(STARTING_ROBOT_POSITION,STARTING_ROBOT_ORIENTATION);
-    // robot.set_monitoring_interval(Constants::MONITORING_INTERVAL_MICROSECONDS);
-
+    robot.reset_error();
+    robot.set_conf(ROBOT_CONF);
+    robot.move_pose(STARTING_ROBOT_POSITION, STARTING_ROBOT_ORIENTATION);
     timer.set_starting_timestamp();
 
     mlockall(MCL_CURRENT | MCL_FUTURE);
@@ -71,46 +77,19 @@ int main()
 
         timestamp_microseconds = timer.get_microseconds_from_program_start();
         current_encoder_angle = encoder.get_angle();
-        encoder.calibrate(timestamp_microseconds);
-        new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds, current_encoder_angle);
-
-        if (!Constants::BYPASS_ROBOT)
-        {
-            // robot.move_lin_vel_trf(new_robot_input_velocity);
-
-            // current_robot_ctrl_speed = robot.get_target_velocity();
-            // robot_ctrl_speed_timestamp = robot.get_target_speed_timestamp();
-            // current_robot_velocity = robot.get_velocity();
-            // speed_timestamp = robot.get_speed_timestamp();
-            // current_robot_position = robot.get_position();
-            // pos_timestamp = robot.get_position_timestamp();
+        if(Constants::ACTIVATE_ROBOT_CALIBRATION) {
+            encoder.calibrate(timestamp_microseconds);
         }
-
-        if (robot_ctrl_speed_timestamp > 1e-5)
-        { // this is needed because first feedbacks will have a timestamp of 0
-            static double robot_zero_timestamp = robot_ctrl_speed_timestamp;
-            csvLogger << (double)timestamp_microseconds * 1e-6;
-            csvLogger << current_encoder_angle;
-            csvLogger << new_robot_input_velocity;
-            csvLogger << robot_ctrl_speed_timestamp - robot_zero_timestamp;
-            csvLogger << current_robot_ctrl_speed;
-            csvLogger << speed_timestamp - robot_zero_timestamp;
-            csvLogger << current_robot_velocity;
-            csvLogger << pos_timestamp - robot_zero_timestamp;
-            csvLogger << current_robot_position;
-        }
-        else
-        {
-            csvLogger << (double)timestamp_microseconds * 1e-6;
-            csvLogger << current_encoder_angle;
-            csvLogger << new_robot_input_velocity;
-            csvLogger << robot_ctrl_speed_timestamp;
-            csvLogger << current_robot_ctrl_speed;
-            csvLogger << speed_timestamp;
-            csvLogger << current_robot_velocity;
-            csvLogger << pos_timestamp;
-            csvLogger << current_robot_position;
-        }
+        new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds,current_encoder_angle);
+            // std::cout << current_encoder_angle << '\n';//test
+        robot.move_lin_vel_trf(new_robot_input_velocity);
+        current_robot_position = robot.get_position();
+        csvLogger << (double)timestamp_microseconds * 1e-6;
+        csvLogger << current_encoder_angle;
+        csvLogger << new_robot_input_velocity;
+        //csvLogger << robot_joints[JOINT_TO_MOVE];
+        csvLogger << current_robot_position;
+        csvLogger << encoder.get_omega();
 
         // printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10.3f robot_velocity=%-10.3f\n\n" ,
         //     current_encoder_angle , timer.get_mean_cycle_time(),
