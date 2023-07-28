@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.12)
 project (inverted-pendulum-control)
 
-set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules)  
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 
 set(EXECUTABLE_NAME stabilizer)
 

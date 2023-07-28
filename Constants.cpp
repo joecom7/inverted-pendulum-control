@@ -15,9 +15,9 @@ const bool Constants::BYPASS_ROBOT = true;
 const bool Constants::ACTIVATE_ROBOT_FEEDBACK = true;
 const bool Constants::TIMER_AGGRESSIVE_MODE = false;
 const bool Constants::ACTIVATE_ROBOT_CALIBRATION = false;
-const double Constants::ROBOT_POS_LIMIT = 0.5;
+const double Constants::ROBOT_POS_LIMIT = 0.2;
 const double Constants::SQUARE_WAVE_AMPLITUDE_PKPK_MPS = 0.05;
-const double Constants::SQUARE_WAVE_FREQUENCY_HZ = 0.88;
+const double Constants::SQUARE_WAVE_FREQUENCY_HZ = 2;
 const double Constants::SQUARE_WAVE_MEAN_MPS = 0;
 
 #ifdef ROBOT_IP_IS_LOCALHOST
@@ -29,7 +29,7 @@ const char* Constants::ROBOT_IP = "192.168.2.103";
 #endif
 
 const char* Constants::LOGFILE_NAME = "pendulum.csv";
-const control_type_t Constants::CONTROL_TYPE = NO_FEEDBACK;
+const control_type_t Constants::CONTROL_TYPE = SQUARE;
 const double Constants::CHIRP_F0_HZ = 0.01;
 const double Constants::CHIRP_K = 0.4;
 const double Constants::CHIRP_APKPK_MPS = 0.2;
@@ -37,3 +37,6 @@ char Constants::NETWORK_INTERFACE[] = "eth0";
 
 const float Constants::ROBOT_BLENDING_PERCENTAGE = 0.0;
 const float Constants::ROBOT_ACCELERATION_LIMIT = 100.0;
+
+const double Constants::START_CONTROL_ANGLE_DEGREES = 2.0;
+const double Constants::STOP_CONTROL_ANGLE_DEGREES = 60.0;

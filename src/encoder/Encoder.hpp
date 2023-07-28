@@ -16,6 +16,7 @@ class Encoder {
         re_decoder decoder;
 
         uint64_t old_timestamp;
+        double costante_tempo_filtro = 10e-3;
         int old_pos;
         static void callback(int way);
         double omega_prev = 0;

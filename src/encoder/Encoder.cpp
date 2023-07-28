@@ -20,12 +20,12 @@ Encoder::Encoder(int clk_gpio, int dt_gpio, int ppr, int start_angle_degrees) :
 
 void Encoder::callback(int way) {
     Encoder::pos += way;
-    // if(Encoder::pos > Encoder::MAX_POS) {
-    //     Encoder::pos -= Encoder::PPR;
-    // }
-    // else if(Encoder::pos <= Encoder::MIN_POS) {
-    //     Encoder::pos += Encoder::PPR;
-    // }
+    if(Encoder::pos > Encoder::MAX_POS) {
+        Encoder::pos -= Encoder::PPR;
+    }
+    else if(Encoder::pos <= Encoder::MIN_POS) {
+        Encoder::pos += Encoder::PPR;
+    }
 }
 
 double Encoder::get_angle() {
@@ -33,9 +33,21 @@ double Encoder::get_angle() {
 }
 
 double Encoder::get_omega() {
-    omega = 0.8187*omega_prev - 100*u_prev + 100*get_angle();
+    double theta = get_angle();
+    double T = 2e-3;
+    if(theta*u_prev < 0 && fabs(theta-u_prev) > M_PI_2) {
+        if(u_prev > 0) {
+            u_prev -= 2*M_PI;
+        }
+        else {
+            u_prev += 2*M_PI;
+        }
+    }
+    double tau = costante_tempo_filtro;
+    omega = -(T-2*tau)/(T+2*tau)*omega_prev + 2/(T+2*tau)*theta - 2/(T+2*tau)*u_prev;
+    //vel = (pos-last_pos)/T;
+    u_prev = theta;
     omega_prev = omega;
-    u_prev = get_angle();
     return omega;
 }
 
@@ -44,7 +56,7 @@ double Encoder::get_angle_degrees() {
 }
 
 void Encoder::calibrate(uint64_t timestamp) {
-    if(old_pos==pos) {
+    if(old_pos==pos && pos > -0.0061 && pos < 0.0061) {
         if((timestamp - old_timestamp )> 300e+3) {
             if(pos>-PPR/4&&pos<PPR/4) {
                 pos = 0;

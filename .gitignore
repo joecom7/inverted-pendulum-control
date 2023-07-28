@@ -15,6 +15,10 @@ pendulum.csv
 log
 *CMakeFiles*
 */CMakeFiles
-*.cmake
 *CMakeCache.txt
-*(Makefile
+*Makefile
+.vscode/
+Cycle_time.txt
+cmake_install.cmake
+nohup.out
+test.out

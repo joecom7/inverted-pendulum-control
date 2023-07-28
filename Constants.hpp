@@ -114,6 +114,9 @@ namespace Constants
     extern const float ROBOT_BLENDING_PERCENTAGE;
     extern const float ROBOT_ACCELERATION_LIMIT;
     extern const bool ACTIVATE_ROBOT_CALIBRATION;
+
+    extern const double START_CONTROL_ANGLE_DEGREES;
+    extern const double STOP_CONTROL_ANGLE_DEGREES;
 }
 
 #endif
