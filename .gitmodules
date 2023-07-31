@@ -2,3 +2,5 @@
 	path = meca500_ethercat_cpp
 	url = https://github.com/joecom7/meca500_ethercat_cpp.git
 	branch = main
+[submodule "meca500_ethercat_cpp/"]
+	branch = main
