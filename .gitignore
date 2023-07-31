@@ -13,3 +13,12 @@ src/robot/mecawrapper/mecawrapper.c
 src/robot/mecawrapper/mecawrapper.h
 pendulum.csv
 log
+*CMakeFiles*
+*/CMakeFiles
+*CMakeCache.txt
+*Makefile
+.vscode/
+Cycle_time.txt
+cmake_install.cmake
+nohup.out
+test.out

@@ -16,8 +16,13 @@ class Encoder {
         re_decoder decoder;
 
         uint64_t old_timestamp;
+        double costante_tempo_filtro = 10e-3;
         int old_pos;
         static void callback(int way);
+        double omega_prev = 0;
+        double omega = 0;
+        double u_prev = 0;
+        double T = 4e-3;
     public:
         /**
          * @brief Construct a new Encoder object.
@@ -39,6 +44,7 @@ class Encoder {
          * 
          * @return double The angle of the encoder in degrees.
          */
+        double get_omega();
         double get_angle_degrees();
         /**
          * @brief Calibrate the encoder. This is optional but it helps

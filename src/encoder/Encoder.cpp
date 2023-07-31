@@ -32,12 +32,30 @@ double Encoder::get_angle() {
     return pos*RESOLUTION_RADIANS;
 }
 
+double Encoder::get_omega() {
+    double theta = get_angle();
+    if(theta*u_prev < 0 && fabs(theta-u_prev) > M_PI_2) {
+        if(u_prev > 0) {
+            u_prev -= 2*M_PI;
+        }
+        else {
+            u_prev += 2*M_PI;
+        }
+    }
+    double tau = costante_tempo_filtro;
+    omega = -(T-2*tau)/(T+2*tau)*omega_prev + 2/(T+2*tau)*theta - 2/(T+2*tau)*u_prev;
+    //vel = (pos-last_pos)/T;
+    u_prev = theta;
+    omega_prev = omega;
+    return omega;
+}
+
 double Encoder::get_angle_degrees() {
     return pos*RESOLUTION_DEGREES;
 }
 
 void Encoder::calibrate(uint64_t timestamp) {
-    if(old_pos==pos) {
+    if(old_pos==pos && pos > -0.0061 && pos < 0.0061) {
         if((timestamp - old_timestamp )> 300e+3) {
             if(pos>-PPR/4&&pos<PPR/4) {
                 pos = 0;
