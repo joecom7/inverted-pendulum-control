@@ -9,7 +9,7 @@
 #include "signal.h"
 #include <sys/mman.h>
 
-#define JOINT_TO_MOVE 0
+#define JOINT_TO_MOVE 0 //test
 
 Robot robot(Constants::ROBOT_POS_LIMIT,
             Constants::TARGET_CYCLE_TIME_MICROSECONDS,
@@ -71,6 +71,8 @@ int main()
     //float joint_omega[6] = {0,0,0,0,0,0};
     //float robot_joints[6];
 
+    float pose[6];
+
     mlockall(MCL_CURRENT | MCL_FUTURE);
 
     while (!program_terminated)
@@ -87,9 +89,9 @@ int main()
         }
         current_encoder_angle = encoder.get_angle();
         omega = encoder.get_omega();
-        current_robot_position = robot.get_position();
+        robot.get_pose(pose);
         robot_velocity = robot.get_velocity();
-        new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds,current_encoder_angle,omega,current_robot_position,robot_velocity);
+        new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds,current_encoder_angle,omega,pose[0],robot_velocity);
             // std::cout << current_encoder_angle << '\n';//test
         robot.move_lin_vel_trf_x(new_robot_input_velocity);
         //joint_omega[JOINT_TO_MOVE] = new_robot_input_velocity;
@@ -99,9 +101,14 @@ int main()
         csvLogger << new_robot_input_velocity;
         //robot.get_joints(robot_joints);
         //csvLogger << robot_joints[JOINT_TO_MOVE];
-        csvLogger << current_robot_position;
+        csvLogger << pose[0];
         csvLogger << omega;
         csvLogger << robot_velocity;
+        // csvLogger << pose[1];
+        // csvLogger << pose[2];
+        // csvLogger << pose[3];
+        // csvLogger << pose[4];
+        // csvLogger << pose[5];
 
         // printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10.3f robot_velocity=%-10.3f\n\n" ,
         //     current_encoder_angle , timer.get_mean_cycle_time(),

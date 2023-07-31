@@ -34,7 +34,6 @@ double Encoder::get_angle() {
 
 double Encoder::get_omega() {
     double theta = get_angle();
-    double T = 2e-3;
     if(theta*u_prev < 0 && fabs(theta-u_prev) > M_PI_2) {
         if(u_prev > 0) {
             u_prev -= 2*M_PI;

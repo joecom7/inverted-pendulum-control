@@ -63,7 +63,6 @@ double FeedbackController::vel_control(uint64_t timestamp_microseconds, double e
 
     // velocity = last_vel + (CYCLE_TIME)*0.5*accel + (CYCLE_TIME)*0.5*last_accel;
     velocity = last_vel + (CYCLE_TIME)*last_accel;
-    last_vel = velocity;
     last_accel = accel;
 
     if (velocity > velocity_saturation)
@@ -74,6 +73,8 @@ double FeedbackController::vel_control(uint64_t timestamp_microseconds, double e
     {
         velocity = -velocity_saturation;
     }
+
+    last_vel = velocity;
 
     return velocity;
 }
@@ -146,9 +147,9 @@ double FeedbackController::chirp(uint64_t timestamp_microseconds)
 double FeedbackController::cosine(uint64_t timestamp_microseconds)
 {
     double t = (float)timestamp_microseconds * 1e-6;
-    double T = 4;
-    double A = 10;
-    return -(A - A * cos(2 * M_PI * t / T));
+    double T = 1;
+    double A = 0.4;
+    return A * sin(2 * M_PI * t / T); //test
 }
 
 double FeedbackController::square_wave(uint64_t timestamp_microseconds)
