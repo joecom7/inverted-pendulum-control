@@ -59,6 +59,7 @@ class Encoder {
          * on the encoder rotation is cancelled.
          * 
          */
+        void set_zero(int start_angle_degrees);
         ~Encoder();
 };
 
