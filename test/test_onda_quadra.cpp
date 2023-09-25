@@ -1,12 +1,12 @@
 #include <iostream>
-#include "src/encoder/Encoder.hpp"
-#include "src/timer/Timer.hpp"
-#include "Constants.hpp"
+#include "../src/encoder/Encoder.hpp"
+#include "../src/timer/Timer.hpp"
+#include "../Constants.hpp"
 #include <inttypes.h>
-#include "meca500_ethercat_cpp/Robot.hpp"
-#include "src/csvlogger/CsvLogger.hpp"
-#include "src/lcd/LCD.hpp"
-#include "src/controller/FeedbackController.hpp"
+#include "../meca500_ethercat_cpp/Robot.hpp"
+#include "../src/csvlogger/CsvLogger.hpp"
+#include "../src/lcd/LCD.hpp"
+#include "../src/controller/FeedbackController.hpp"
 #include "signal.h"
 #include <sys/mman.h>
 #include <pigpio.h>
@@ -76,7 +76,7 @@ void control()
                 Constants::ROBOT_BLENDING_PERCENTAGE,
                 Constants::ROBOT_ACCELERATION_LIMIT);
 
-    CsvLogger csvLogger(Constants::LOGFILE_NAME);
+    CsvLogger csvLogger("onda_quadra_nuova.csv");
     float delay_feedback_gain;
     if (Constants::TIMER_AGGRESSIVE_MODE)
     {
@@ -98,8 +98,8 @@ void control()
     signal(6, cleanup);
 
     FeedbackController feedbackController(SQUARE, Constants::START_CONTROL_ANGLE_DEGREES, Constants::STOP_CONTROL_ANGLE_DEGREES, Constants::TARGET_CYCLE_TIME_MICROSECONDS);
-    feedbackController.set_square_wave_param(Constants::SQUARE_WAVE_FREQUENCY_HZ,
-                                             0.0,
+    feedbackController.set_square_wave_param(2.0,
+                                             0.002,
                                              0.0);
     feedbackController.set_chirp_param(Constants::CHIRP_F0_HZ,
                                        Constants::CHIRP_K,
@@ -107,8 +107,7 @@ void control()
     // robot setup
     robot.reset_error();
     robot.set_conf(ROBOT_CONF);
-    robot.move_pose(0, -240+18, 190-15, 90-3, 0-2, 0+1);
-    timer.set_starting_timestamp();
+    robot.move_pose(STARTING_ROBOT_POSITION, STARTING_ROBOT_ORIENTATION);
 
     double omega, robot_velocity;
     // float joint_omega[6] = {0,0,0,0,0,0};
@@ -119,76 +118,47 @@ void control()
     mlockall(MCL_CURRENT | MCL_FUTURE);
     Encoder encoder(Constants::ENCODER_CLK_PIN,
                     Constants::ENCODER_DT_PIN, Constants::ENCODER_PPR,
-                    Constants::ENCODER_START_ANGLE_DEGREES);
-    uint8_t low_omega_counter = 0;
-    //while(low_omega_counter<10) {
-    //    if(encoder.get_omega()<1e-4) {
-    //        low_omega_counter++;
-    //    }
-    //    else {
-    //        low_omega_counter = 0;
-    //    }
-    //    usleep(200000);
-    //}
+                    0.0);
     lcd->clear();
-    (*lcd) << "Premere il tasto";
-    lcd->setPosition(0, 1);
-    (*lcd) << "K1 per calibrare";
-    //while (gpioRead(CALIBRATE_BUTTON_GPIO) == 1)
-    //{
-    //    usleep(200);
-    //}
-    encoder.set_zero(Constants::ENCODER_START_ANGLE_DEGREES);
+    uint8_t low_omega_counter = 0;
+    while(low_omega_counter<10) {
+        if(encoder.get_omega()<1e-4) {
+            low_omega_counter++;
+        }
+        else {
+            low_omega_counter = 0;
+        }
+        usleep(200000);
+    }
+    encoder.set_zero(0.0);
     lcd->clear();
     lcd_print_param_t param = {&current_encoder_angle,&omega,pose,&current_robot_velocity};
-    //std::thread lcd_thd(lcd_printer, &param);
+    timer.set_starting_timestamp();
+    std::thread lcd_thd(lcd_printer, &param);
 
     control_terminated = false;
 
-    while (timestamp_microseconds<10*1e+6)
+    while (!control_terminated)
     {
         timer.start_cycle();
-
-        /*
-            tasks to execute in loop
-        */
-
         timestamp_microseconds = timer.get_microseconds_from_program_start();
         current_encoder_angle = encoder.get_angle();
         omega = encoder.get_omega();
         robot.get_pose(pose);
         robot_velocity = robot.get_velocity();
         new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds, current_encoder_angle, omega, pose[0], robot_velocity);
-        // std::cout << current_encoder_angle << '\n';//test
         robot.move_lin_vel_trf_x(new_robot_input_velocity);
-        // joint_omega[JOINT_TO_MOVE] = new_robot_input_velocity;
         // robot.move_joints_vel(joint_omega)
         csvLogger << (double)timestamp_microseconds * 1e-6;
         csvLogger << current_encoder_angle;
         csvLogger << new_robot_input_velocity;
-        // robot.get_joints(robot_joints);
-        // csvLogger << robot_joints[JOINT_TO_MOVE];
         csvLogger << pose[0];
         csvLogger << omega;
         csvLogger << robot_velocity;
-        // csvLogger << pose[1];
-        // csvLogger << pose[2];
-        // csvLogger << pose[3];
-        // csvLogger << pose[4];
-        // csvLogger << pose[5];
-
-        // printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10.3f robot_velocity=%-10.3f\n\n" ,
-        //     current_encoder_angle , timer.get_mean_cycle_time(),
-        //     timer.get_standard_deviation_cycle_time() , (float)timer.get_max_cycle_time() ,current_robot_velocity);
-
-        /*
-            end of loop
-        */
-
         csvLogger.end_row();
         timer.end_cycle();
     }
-    //lcd_thd.join();
+    lcd_thd.join();
     printf("received termination signal. terminating...\n");
 }
 
@@ -203,12 +173,34 @@ int main()
         std::cout << "Failure..." << std::endl;
         exit(-1);
     }
-    control();
-    Robot robot(Constants::ROBOT_POS_LIMIT,
-                Constants::TARGET_CYCLE_TIME_MICROSECONDS,
-                Constants::NETWORK_INTERFACE,
-                Constants::ROBOT_BLENDING_PERCENTAGE,
-                Constants::ROBOT_ACCELERATION_LIMIT);
-    robot.deactivate();
+    lcd = new LCD(1, 0x27);
+
+    gpioSetMode(START_BUTTON_GPIO, PI_INPUT);
+    gpioSetMode(CALIBRATE_BUTTON_GPIO, PI_INPUT);
+    gpioSetMode(EXIT_BUTTON_GPIO, PI_INPUT);
+
+    gpioSetPullUpDown(START_BUTTON_GPIO, PI_PUD_UP);
+    gpioSetPullUpDown(CALIBRATE_BUTTON_GPIO, PI_PUD_UP);
+    gpioSetPullUpDown(EXIT_BUTTON_GPIO, PI_PUD_UP);
+    gpioSetISRFunc(EXIT_BUTTON_GPIO, 0, 0, pressed_terminate_button);
+
+    while (!program_terminated)
+    {
+        usleep(1000000);
+        lcd->clear();
+        (*lcd) << "Premere il tasto";
+        lcd->setPosition(0, 1);
+        (*lcd) << "K4 per iniziare";
+        while (gpioRead(START_BUTTON_GPIO) == 1)
+        {
+            usleep(200);
+        }
+        lcd->clear();
+        (*lcd) << "Attendere...";
+        gpioSetISRFunc(START_BUTTON_GPIO, 0, 0, pressed_start_button);
+        control();
+        gpioSetISRFunc(START_BUTTON_GPIO, 0, 0, NULL);
+    }
+    lcd->clear();
     gpioTerminate();
 }

@@ -24,3 +24,15 @@ nohup.out
 test.out
 feedback.csv
 test-feedback
+caduta_libera.csv
+feedback_tempi.csv
+test-feedback-posa
+test-caduta-libera
+test-controllo
+test-onda-quadra
+libinverted-pendulum-control.a
+meca500_ethercat_cpp
+onda_quadra_nuova.csv
+test_controllo.csv
+prove_definitive/onda_quadra_nuova.csv
+prove_definitive/test_controllo.csv

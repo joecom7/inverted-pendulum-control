@@ -1,6 +1,6 @@
 #include "CsvLogger.hpp"
 
-#define LOGGING_DISABLED TRUE
+//#define LOGGING_DISABLED TRUE
 
 CsvLogger::CsvLogger(const std::string filename) : FILENAME(filename.c_str())
 {

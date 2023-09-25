@@ -1,11 +1,12 @@
 #include <iostream>
-#include "src/encoder/Encoder.hpp"
-#include "src/timer/Timer.hpp"
-#include "Constants.hpp"
+#include "../src/encoder/Encoder.hpp"
+#include "../src/timer/Timer.hpp"
+#include "../Constants.hpp"
 #include <inttypes.h>
-#include "meca500_ethercat_cpp/Robot.hpp"
-#include "src/lcd/LCD.hpp"
-#include "src/controller/FeedbackController.hpp"
+#include "../meca500_ethercat_cpp/Robot.hpp"
+#include "../src/csvlogger/CsvLogger.hpp"
+#include "../src/lcd/LCD.hpp"
+#include "../src/controller/FeedbackController.hpp"
 #include "signal.h"
 #include <sys/mman.h>
 #include <pigpio.h>
@@ -75,6 +76,7 @@ void control()
                 Constants::ROBOT_BLENDING_PERCENTAGE,
                 Constants::ROBOT_ACCELERATION_LIMIT);
 
+    CsvLogger csvLogger("test_controllo.csv");
     float delay_feedback_gain;
     if (Constants::TIMER_AGGRESSIVE_MODE)
     {
@@ -146,31 +148,21 @@ void control()
     while (!control_terminated)
     {
         timer.start_cycle();
-
-        /*
-            tasks to execute in loop
-        */
-
         timestamp_microseconds = timer.get_microseconds_from_program_start();
         current_encoder_angle = encoder.get_angle();
         omega = encoder.get_omega();
         robot.get_pose(pose);
         robot_velocity = robot.get_velocity();
         new_robot_input_velocity = feedbackController.get_robot_input(timestamp_microseconds, current_encoder_angle, omega, pose[0], robot_velocity);
-        // std::cout << current_encoder_angle << '\n';//test
         robot.move_lin_vel_trf_x(new_robot_input_velocity);
-        // joint_omega[JOINT_TO_MOVE] = new_robot_input_velocity;
         // robot.move_joints_vel(joint_omega)
-        // robot.get_joints(robot_joints);
-
-        // printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10.3f robot_velocity=%-10.3f\n\n" ,
-        //     current_encoder_angle , timer.get_mean_cycle_time(),
-        //     timer.get_standard_deviation_cycle_time() , (float)timer.get_max_cycle_time() ,current_robot_velocity);
-
-        /*
-            end of loop
-        */
-
+        csvLogger << (double)timestamp_microseconds * 1e-6;
+        csvLogger << current_encoder_angle;
+        csvLogger << new_robot_input_velocity;
+        csvLogger << pose[0];
+        csvLogger << omega;
+        csvLogger << robot_velocity;
+        csvLogger.end_row();
         timer.end_cycle();
     }
     lcd_thd.join();
