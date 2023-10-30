@@ -3,8 +3,8 @@
 // commentare per non usare localhost come ip del robot
 //#define ROBOT_IP_IS_LOCALHOST
 
-const uint32_t Constants::MONITORING_INTERVAL_MICROSECONDS = 4000;
-const uint32_t Constants::TARGET_CYCLE_TIME_MICROSECONDS = 4000;
+const uint32_t Constants::MONITORING_INTERVAL_MICROSECONDS = 2000;
+const uint32_t Constants::TARGET_CYCLE_TIME_MICROSECONDS = 2000;
 const uint8_t Constants::ENCODER_CLK_PIN = 17;
 const uint8_t Constants::ENCODER_DT_PIN = 18;
 const uint16_t Constants::ENCODER_PPR = 1024;
@@ -38,5 +38,7 @@ char Constants::NETWORK_INTERFACE[] = "eth0";
 const float Constants::ROBOT_BLENDING_PERCENTAGE = 0.0;
 const float Constants::ROBOT_ACCELERATION_LIMIT = 100.0;
 
-const double Constants::START_CONTROL_ANGLE_DEGREES = 5.0;
-const double Constants::STOP_CONTROL_ANGLE_DEGREES = 5.0;
+const double Constants::START_CONTROL_ANGLE_DEGREES = 7.0;
+const double Constants::STOP_CONTROL_ANGLE_DEGREES = 7.0;
+
+const double Constants::START_SWINGUP_ANGLE_DEGREES = 5.0;

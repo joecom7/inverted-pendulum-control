@@ -22,7 +22,7 @@ class Encoder {
         double omega_prev = 0;
         double omega = 0;
         double u_prev = 0;
-        double T = 4e-3;
+        double T = 2e-3;
     public:
         /**
          * @brief Construct a new Encoder object.

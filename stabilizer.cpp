@@ -10,6 +10,7 @@
 #include <sys/mman.h>
 #include <pigpio.h>
 
+
 #define START_BUTTON_GPIO 22
 #define CALIBRATE_BUTTON_GPIO 23
 #define EXIT_BUTTON_GPIO 24
@@ -18,11 +19,12 @@ bool control_terminated;
 bool program_terminated = false;
 LCD *lcd;
 
-typedef struct {
-    double* angle;
-    double* omega;
-    float* robot_x;
-    double* robot_speed;
+typedef struct
+{
+    double *angle;
+    double *omega;
+    float *robot_x;
+    double *robot_speed;
 } lcd_print_param_t;
 
 void pressed_start_button(int, int, unsigned int)
@@ -38,7 +40,7 @@ void pressed_terminate_button(int, int, unsigned int)
 
 void lcd_printer(void *arg)
 {
-    lcd_print_param_t *param = (lcd_print_param_t*)arg;
+    lcd_print_param_t *param = (lcd_print_param_t *)arg;
     char buffer[100];
     struct sched_param sp;
     memset(&sp, 0, sizeof(sp));
@@ -47,16 +49,16 @@ void lcd_printer(void *arg)
     while (!control_terminated)
     {
         lcd->clear();
-        sprintf(buffer, "%8.2lf gradi\0", *(param->angle)*180.0/M_PI);
+        sprintf(buffer, "%8.2lf gradi\0", *(param->angle) * 180.0 / M_PI);
         (*lcd) << buffer;
-        //lcd->setPosition(7, 0);
-        //sprintf(buffer, "%4.1lf g/s\0", *(param->omega)*M_PI/180.0);
+        // lcd->setPosition(7, 0);
+        // sprintf(buffer, "%4.1lf g/s\0", *(param->omega)*M_PI/180.0);
         //(*lcd) << buffer;
         lcd->setPosition(0, 1);
-        sprintf(buffer, "%8.2f cm\0", *(param->robot_x)*100.0);
+        sprintf(buffer, "%8.2f cm\0", *(param->robot_x) * 100.0);
         (*lcd) << buffer;
-        //lcd->setPosition(7, 1);
-        //sprintf(buffer, "%4.1lf cm/s\0", *(param->omega)*100.0);
+        // lcd->setPosition(7, 1);
+        // sprintf(buffer, "%4.1lf cm/s\0", *(param->omega)*100.0);
         //(*lcd) << buffer;
         usleep(100000);
     }
@@ -119,11 +121,14 @@ void control()
                     Constants::ENCODER_DT_PIN, Constants::ENCODER_PPR,
                     Constants::ENCODER_START_ANGLE_DEGREES);
     uint8_t low_omega_counter = 0;
-    while(low_omega_counter<10) {
-        if(encoder.get_omega()<1e-4) {
+    while (low_omega_counter < 10)
+    {
+        if (encoder.get_omega() < 1e-4)
+        {
             low_omega_counter++;
         }
-        else {
+        else
+        {
             low_omega_counter = 0;
         }
         usleep(200000);
@@ -138,7 +143,7 @@ void control()
     }
     encoder.set_zero(Constants::ENCODER_START_ANGLE_DEGREES);
     lcd->clear();
-    lcd_print_param_t param = {&current_encoder_angle,&omega,pose,&current_robot_velocity};
+    lcd_print_param_t param = {&current_encoder_angle, &omega, pose, &current_robot_velocity};
     std::thread lcd_thd(lcd_printer, &param);
 
     control_terminated = false;
@@ -208,12 +213,17 @@ int main()
         (*lcd) << "K4 per iniziare";
         while (gpioRead(START_BUTTON_GPIO) == 1)
         {
+            if (control_terminated)
+            {
+                program_terminated = true; //
+            }
             usleep(200);
         }
+        gpioSetISRFunc(START_BUTTON_GPIO, 0, 0, pressed_start_button);
         lcd->clear();
         (*lcd) << "Attendere...";
-        gpioSetISRFunc(START_BUTTON_GPIO, 0, 0, pressed_start_button);
         control();
+
         gpioSetISRFunc(START_BUTTON_GPIO, 0, 0, NULL);
     }
     lcd->clear();
@@ -222,6 +232,6 @@ int main()
                 Constants::NETWORK_INTERFACE,
                 Constants::ROBOT_BLENDING_PERCENTAGE,
                 Constants::ROBOT_ACCELERATION_LIMIT);
-    robot.deactivate();
+    // robot.deactivate();
     gpioTerminate();
 }

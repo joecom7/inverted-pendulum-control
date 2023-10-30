@@ -122,6 +122,8 @@ namespace Constants
 
     extern const double START_CONTROL_ANGLE_DEGREES;
     extern const double STOP_CONTROL_ANGLE_DEGREES;
+
+    extern const double START_SWINGUP_ANGLE_DEGREES;
 }
 
 #endif

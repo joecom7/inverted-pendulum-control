@@ -214,6 +214,6 @@ int main()
                 Constants::NETWORK_INTERFACE,
                 Constants::ROBOT_BLENDING_PERCENTAGE,
                 Constants::ROBOT_ACCELERATION_LIMIT);
-    robot.deactivate();
+    //robot.deactivate();
     gpioTerminate();
 }

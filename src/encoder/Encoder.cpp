@@ -14,12 +14,14 @@ Encoder::Encoder(int clk_gpio, int dt_gpio, int ppr, int start_angle_degrees) : 
 {
     Encoder::PPR = ppr;
     pos = (start_angle_degrees * ppr) / 360;
+    u_prev = pos * RESOLUTION_RADIANS;
     Encoder::MAX_POS = ppr / 2;
     Encoder::MIN_POS = -ppr / 2;
 }
 void Encoder::set_zero(int start_angle_degrees)
 {
     pos = (start_angle_degrees * PPR) / 360;
+    u_prev = pos * RESOLUTION_RADIANS;
 }
 void Encoder::callback(int way)
 {

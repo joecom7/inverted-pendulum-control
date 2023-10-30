@@ -98,8 +98,8 @@ void control()
     signal(6, cleanup);
 
     FeedbackController feedbackController(SQUARE, Constants::START_CONTROL_ANGLE_DEGREES, Constants::STOP_CONTROL_ANGLE_DEGREES, Constants::TARGET_CYCLE_TIME_MICROSECONDS);
-    feedbackController.set_square_wave_param(2.0,
-                                             0.002,
+    feedbackController.set_square_wave_param(1,
+                                             0.3,
                                              0.0);
     feedbackController.set_chirp_param(Constants::CHIRP_F0_HZ,
                                        Constants::CHIRP_K,

@@ -1,12 +1,11 @@
 # inverted-pendulum-control
 
-This project controls a robotic arm (Meca500) to stabilize an inverted pendulum.
+Progetto per la tesi di laurea di Giovanni Francesco Comune e Gianluca Pandolfi
 
-## Requirements
+## Requisiti
 
-To compile you need the pigpio library. Install with:
-
-```bash
+Per compilare il progetto è necessaria la libreria pigpio. Installarla con:
+```
 wget https://github.com/joan2937/pigpio/archive/master.zip
 unzip master.zip
 cd pigpio-master
@@ -14,19 +13,25 @@ make
 sudo make install
 ```
 
-## Compile
+Sono inoltre necessari python3 e la libreria cython. Installarla con:
 
-Compile with:
+```
+pip3 install Cython
+```
 
-```bash
-cmake .
+
+
+## Compilazione
+
+Compilare con:
+
+```
 make
 ```
 
-## Run
+## Esecuzione
+Eseguire con:
 
-Run with:
-
-```bash
+```
 sudo ./stabilizer
 ```

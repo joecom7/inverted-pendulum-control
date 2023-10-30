@@ -36,3 +36,4 @@ onda_quadra_nuova.csv
 test_controllo.csv
 prove_definitive/onda_quadra_nuova.csv
 prove_definitive/test_controllo.csv
+build/*
