@@ -5,8 +5,10 @@
 
 const double ROBOT_DECELERATION_RANGE = 0.16;
 
-FeedbackController::FeedbackController(control_type_t control_type_in, double start_control_angle_degrees, double stop_control_angle_degrees, uint32_t target_cycle_time_microseconds) : START_CONTROL_ANGLE(start_control_angle_degrees * M_PI / 180.0), STOP_CONTROL_ANGLE(stop_control_angle_degrees * M_PI / 180.0),
-                                                                                                                                                                                         CYCLE_TIME(target_cycle_time_microseconds * 1e-6)
+FeedbackController::FeedbackController(control_type_t control_type_in, double start_control_angle_degrees, double stop_control_angle_degrees, uint32_t target_cycle_time_microseconds, bool activate_swingup) : START_CONTROL_ANGLE(start_control_angle_degrees * M_PI / 180.0), STOP_CONTROL_ANGLE(stop_control_angle_degrees * M_PI / 180.0),
+                                                                                                                                                                                         CYCLE_TIME(target_cycle_time_microseconds * 1e-6),
+                                                                                                                                                                                         ACTIVATE_SWINGUP(activate_swingup)
+
 {
     std::cout << "cycle time = " << CYCLE_TIME;
     control_type = control_type_in;
@@ -56,9 +58,12 @@ double FeedbackController::controller(uint64_t timestamp_microseconds, double en
         return vel_control(timestamp_microseconds, encoder_angle, encoder_omega, robot_pos, robot_speed);
         break;
     case SWING_UP_RANGE:
-        return vel_control(timestamp_microseconds, encoder_angle, encoder_omega, robot_pos, robot_speed);
-        // return 0;
-        break;
+        if(ACTIVATE_SWINGUP) {
+            return vel_control(timestamp_microseconds, encoder_angle, encoder_omega, robot_pos, robot_speed);
+        }
+        else {
+            return 0;
+        }
     case GOING_BACK_TO_START:
         return vel_control(timestamp_microseconds, encoder_angle, encoder_omega, robot_pos, robot_speed);
         break;
@@ -117,13 +122,15 @@ double FeedbackController::vel_control(uint64_t timestamp_microseconds, double e
 
     last_accel = accel;
 
-    if (velocity > velocity_saturation)
+    double velocity_saturation_temp = velocity_saturation - ((velocity_saturation)/pow(0.18,4))*pow(robot_pos,4);
+
+    if (velocity > velocity_saturation_temp)
     {
-        velocity = velocity_saturation;
+        velocity = velocity_saturation_temp;
     }
-    else if (velocity < -velocity_saturation)
+    else if (velocity < -velocity_saturation_temp)
     {
-        velocity = -velocity_saturation;
+        velocity = -velocity_saturation_temp;
     }
 
     last_vel = velocity;
@@ -241,6 +248,12 @@ void FeedbackController::update_pendulum_state(uint64_t timestamp_microseconds, 
     case SWING_UP_RANGE:
         if (fabs(encoder_angle) < START_CONTROL_ANGLE)
         {
+            if(!ACTIVATE_SWINGUP) {
+                last_vel = robot_speed;
+                last_accel = 0.0;
+                memset(accel_buffer, 0, BUFFER_LENGTH * sizeof(double));
+                accel_buffer_index = 0; 
+            }
             // last_vel = robot_speed;
             // last_accel = 0.0;
             // memset(accel_buffer, 0, BUFFER_LENGTH * sizeof(double));

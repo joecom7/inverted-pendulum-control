@@ -10,13 +10,13 @@
 #include <sys/mman.h>
 #include <pigpio.h>
 
+bool activate_swingup;
 
 #define START_BUTTON_GPIO 22
 #define CALIBRATE_BUTTON_GPIO 23
-#define EXIT_BUTTON_GPIO 24
+#define SWINGUP_BUTTON_GPIO 24
 
 bool control_terminated;
-bool program_terminated = false;
 LCD *lcd;
 
 typedef struct
@@ -30,12 +30,6 @@ typedef struct
 void pressed_start_button(int, int, unsigned int)
 {
     control_terminated = true;
-}
-
-void pressed_terminate_button(int, int, unsigned int)
-{
-    control_terminated = true;
-    program_terminated = true;
 }
 
 void lcd_printer(void *arg)
@@ -71,6 +65,7 @@ void cleanup(int)
 
 void control()
 {
+    bool robot_error = false;
     Robot robot(Constants::ROBOT_POS_LIMIT,
                 Constants::TARGET_CYCLE_TIME_MICROSECONDS,
                 Constants::NETWORK_INTERFACE,
@@ -97,7 +92,7 @@ void control()
     signal(2, cleanup);
     signal(6, cleanup);
 
-    FeedbackController feedbackController(Constants::CONTROL_TYPE, Constants::START_CONTROL_ANGLE_DEGREES, Constants::STOP_CONTROL_ANGLE_DEGREES, Constants::TARGET_CYCLE_TIME_MICROSECONDS);
+    FeedbackController feedbackController(Constants::CONTROL_TYPE, Constants::START_CONTROL_ANGLE_DEGREES, Constants::STOP_CONTROL_ANGLE_DEGREES, Constants::TARGET_CYCLE_TIME_MICROSECONDS, activate_swingup);
     feedbackController.set_square_wave_param(Constants::SQUARE_WAVE_FREQUENCY_HZ,
                                              Constants::SQUARE_WAVE_AMPLITUDE_PKPK_MPS,
                                              Constants::SQUARE_WAVE_MEAN_MPS);
@@ -176,6 +171,52 @@ void control()
             end of loop
         */
 
+       /*
+        if (robot_error)
+        {
+            robot.reset_error();
+            robot.move_pose(STARTING_ROBOT_POSITION, STARTING_ROBOT_ORIENTATION);
+            feedbackController.reset();
+
+            // double theta = encoder.get_angle();
+            // usleep(Constants::TARGET_CYCLE_TIME_MICROSECONDS);
+            // double theta_new = encoder.get_angle();
+            // encoder.reset_derivatore((theta_new-theta)/Constants::TARGET_CYCLE_TIME_MICROSECONDS);
+            // usleep(Constants::TARGET_CYCLE_TIME_MICROSECONDS);
+            // uint8_t remaining_cycles = ((25e+3)/Constants::TARGET_CYCLE_TIME_MICROSECONDS) - 2;
+            // for(int i=0;i<remaining_cycles;i++) {
+            //     encoder.get_omega();
+            // }
+            // robot.reset_derivatore();
+            robot_error = false;
+            timer.reset();
+            timer.start_cycle();
+            for (int i = 0; i < 1000; i++)
+            {
+                timer.start_cycle();
+
+                timestamp_microseconds = timer.get_microseconds_from_program_start();
+                current_encoder_angle = encoder.get_angle();
+                omega = encoder.get_omega();
+                robot.get_pose(pose);
+                robot_velocity = robot.get_velocity();
+                new_robot_input_velocity = 0;
+                // std::cout << current_encoder_angle << '\n';//test
+                robot.move_lin_vel_trf_x(new_robot_input_velocity);
+                // joint_omega[JOINT_TO_MOVE] = new_robot_input_velocity;
+                // robot.move_joints_vel(joint_omega)
+                // robot.get_joints(robot_joints);
+
+                // printf("\nenc_angle=%-10.3f mean time=%-10.3f sigma_time=%-10.3f max_time=%-10.3f robot_velocity=%-10.3f\n\n" ,
+                //     current_encoder_angle , timer.get_mean_cycle_time(),
+                //     timer.get_standard_deviation_cycle_time() , (float)timer.get_max_cycle_time() ,current_robot_velocity);
+
+                       timer.end_cycle();
+
+            }
+            timer.start_cycle();
+        }
+        */
         timer.end_cycle();
     }
     lcd_thd.join();
@@ -197,27 +238,33 @@ int main()
 
     gpioSetMode(START_BUTTON_GPIO, PI_INPUT);
     gpioSetMode(CALIBRATE_BUTTON_GPIO, PI_INPUT);
-    gpioSetMode(EXIT_BUTTON_GPIO, PI_INPUT);
+    gpioSetMode(SWINGUP_BUTTON_GPIO, PI_INPUT);
 
     gpioSetPullUpDown(START_BUTTON_GPIO, PI_PUD_UP);
     gpioSetPullUpDown(CALIBRATE_BUTTON_GPIO, PI_PUD_UP);
-    gpioSetPullUpDown(EXIT_BUTTON_GPIO, PI_PUD_UP);
-    gpioSetISRFunc(EXIT_BUTTON_GPIO, 0, 0, pressed_terminate_button);
+    gpioSetPullUpDown(SWINGUP_BUTTON_GPIO, PI_PUD_UP);
+    // gpioSetISRFunc(SWINGUP_BUTTON_GPIO, 0, 0, pressed_terminate_button);
 
-    while (!program_terminated)
+    while (true)
     {
         usleep(1000000);
         lcd->clear();
-        (*lcd) << "Premere il tasto";
+        (*lcd) << "K4: no swingup";
         lcd->setPosition(0, 1);
-        (*lcd) << "K4 per iniziare";
-        while (gpioRead(START_BUTTON_GPIO) == 1)
+        (*lcd) << "K3: swingup";
+        while (gpioRead(START_BUTTON_GPIO) == 1 && gpioRead(SWINGUP_BUTTON_GPIO) == 1)
         {
-            if (control_terminated)
-            {
-                program_terminated = true; //
-            }
-            usleep(200);
+            usleep(100);
+        }
+        if (gpioRead(START_BUTTON_GPIO) == 0)
+        {
+            Constants::START_CONTROL_ANGLE_DEGREES = 5.0;
+            Constants::STOP_CONTROL_ANGLE_DEGREES = 5.0;
+            activate_swingup = false;
+        }
+        else
+        {
+            activate_swingup = true;
         }
         gpioSetISRFunc(START_BUTTON_GPIO, 0, 0, pressed_start_button);
         lcd->clear();
@@ -226,12 +273,4 @@ int main()
 
         gpioSetISRFunc(START_BUTTON_GPIO, 0, 0, NULL);
     }
-    lcd->clear();
-    Robot robot(Constants::ROBOT_POS_LIMIT,
-                Constants::TARGET_CYCLE_TIME_MICROSECONDS,
-                Constants::NETWORK_INTERFACE,
-                Constants::ROBOT_BLENDING_PERCENTAGE,
-                Constants::ROBOT_ACCELERATION_LIMIT);
-    // robot.deactivate();
-    gpioTerminate();
 }

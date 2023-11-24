@@ -38,7 +38,7 @@ char Constants::NETWORK_INTERFACE[] = "eth0";
 const float Constants::ROBOT_BLENDING_PERCENTAGE = 0.0;
 const float Constants::ROBOT_ACCELERATION_LIMIT = 100.0;
 
-const double Constants::START_CONTROL_ANGLE_DEGREES = 7.0;
-const double Constants::STOP_CONTROL_ANGLE_DEGREES = 7.0;
+double Constants::START_CONTROL_ANGLE_DEGREES = 7.0;
+double Constants::STOP_CONTROL_ANGLE_DEGREES = 7.0;
 
 const double Constants::START_SWINGUP_ANGLE_DEGREES = 5.0;

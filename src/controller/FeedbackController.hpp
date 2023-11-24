@@ -36,6 +36,7 @@ private:
     uint32_t SQUARE_WAVE_RAISE_TIME_MICROSECONDS = 0;
     double SQUARE_WAVE_SLOPE;
     pendulum_state_t pendulum_state;
+    const bool ACTIVATE_SWINGUP;
     double square_wave(uint64_t timestamp_microseconds);
     double controller(uint64_t timestamp_microseconds, double encoder_angle,double encoder_omega,double robot_pos,double robot_speed);
     double chirp(uint64_t timestamp_microseconds);
@@ -76,7 +77,7 @@ private:
     double K_PID[BUFFER_LENGTH+5] = {0.000000000000000000000000000000,0.000000000000000000000000000000,14.598323843308801173179745092057,6.479342051801702417890282958979,0.124206508004094773323089384576,0.033197112292957943469051684815,0.030583428944634831470050784219,0.028303292055007433364322011471,0.026315066126691263187487024311,0.024582312883250891089037537540,0.023073142517358598280186043894,0.021759645920490861686902306360,0.020617397785510027663491428029,0.019625021735299855163425775118,0.018763809734950318702795257764,0.018017389011456247382980677685,0.017371430550725274616352677981,0.016813393981935167986740964352};
 public:
     void square_wave_w(float* w,uint64_t timestamp_microseconds);
-    FeedbackController(control_type_t control_type_in,double start_control_angle_degrees,double stop_control_angle_degrees,uint32_t target_cycle_time_microseconds);
+    FeedbackController(control_type_t control_type_in,double start_control_angle_degrees,double stop_control_angle_degrees,uint32_t target_cycle_time_microseconds, bool activate_swingup);
     void set_square_wave_param(double frequency_hz, double amplitude_pkpk_mps, double mean_mps);
     void set_chirp_param(double f0_hz, double k , double apkpk_mps);
     double get_robot_input(uint64_t timestamp_microseconds, double encoder_angle,double encoder_omega,double robot_pos,double robot_speed);
