@@ -1,37 +1,33 @@
 # inverted-pendulum-control
 
-Progetto per la tesi di laurea di Giovanni Francesco Comune e Gianluca Pandolfi
+Giovanni Francesco Comune and Gianluca Pandolfi's bachelor's thesis project
 
-## Requisiti
+## Installation
 
-Per compilare il progetto è necessaria la libreria pigpio. Installarla con:
+Install with
 ```
-wget https://github.com/joan2937/pigpio/archive/master.zip
-unzip master.zip
-cd pigpio-master
-make
-sudo make install
+sudo sh -c "$(curl -fsSL https://raw.githubusercontent.com/joecom7/inverted-pendulum-control/master/install.sh)"
 ```
 
-Sono inoltre necessari python3 e la libreria cython. Installarla con:
-
-```
-pip3 install Cython
-```
-
-
-
-## Compilazione
-
-Compilare con:
-
-```
-make
-```
-
-## Esecuzione
-Eseguire con:
-
-```
-sudo ./stabilizer
-```
+## Pinout
+### Encoder
+|   Encoder Pin|   Raspberry Pi Pin|
+|---|---|
+|  GND | GND  |
+|  A | GPIO 17  |
+| +  | 3.3 V  |
+| B | GPIO 18  |
+### Keyboard
+|   Keyboard Pin|   Raspberry Pi Pin|
+|---|---|
+|  GND | GND  |
+|  D1 | GPIO 23  |
+| D3  |GPIO 24  |
+| D4 | GPIO 22  |
+### Keyboard
+|   Keyboard Pin|   Raspberry Pi Pin|
+|---|---|
+|  GND | GND  |
+|  VDD | 5V  |
+| SDA  |SDA  |
+| SCL | SCL  |
